@@ -1,0 +1,9 @@
+{
+  "key": "word_prediction",
+  "unigram": {
+    "test": "hallo"
+  },
+  "bigram": {
+    "test": 1
+  }
+}
