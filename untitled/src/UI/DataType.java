@@ -1,4 +1,4 @@
-package Training;
+package UI;
 
 public enum DataType {
     JSON,

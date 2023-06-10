@@ -2,7 +2,7 @@ package UI;
 
 public class Feedback {
     /*
-    Wenn ein Fehler kommt soll dieser als Feedback vermittelt werden.
+    Wenn ein Fehler kommt soll dieser als UI.Feedback vermittelt werden.
     Dafuer ist diese Klasse vorhanden
      */
     private int percent;

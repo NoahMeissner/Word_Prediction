@@ -1,7 +1,6 @@
 package UI;
 
 import Predictor.Loader;
-import Training.DataType;
 import lingologs.Script;
 
 import java.util.ArrayList;

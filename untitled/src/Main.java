@@ -5,6 +5,10 @@ import lingologs.Script;
 
 public class Main {
 
+    /*
+    Start of the Program
+     */
+
     private static final Script BP = new Script("""
         /Users/noahmeissner/Documents/Data/projectreischer/untitled/src/test.json
     """);

@@ -1,14 +1,12 @@
 package UI;
-
 import Predictor.Loader;
-import Training.DataType;
-import Training.PreProcessing;
+import Preprocessing.PreProcessing;
 import lingolava.Nexus;
 import lingologs.Script;
+import org.json.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.json.*;
 
 public class Prozessor {
 
@@ -54,7 +52,7 @@ public class Prozessor {
             }
         } catch (IOException e)
         {
-            // TODO nochmal einfuegen
+            //TODO nochmal einfuegen
             System.out.println("ashjdfg;");
         }
 
