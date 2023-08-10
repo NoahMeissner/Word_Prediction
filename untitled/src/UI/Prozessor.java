@@ -3,7 +3,6 @@ import Predictor.Loader;
 import Preprocessing.PreProcessing;
 import lingolava.Nexus;
 import lingologs.Script;
-import org.json.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,7 +47,7 @@ public class Prozessor {
             }
             else
             {
-                P = new PreProcessing(T);
+               // P = new PreProcessing(T);
             }
         } catch (IOException e)
         {
@@ -80,8 +79,10 @@ public class Prozessor {
         {
             return false;
         }
-        JSONObject JO = new JSONObject(S.toString());
-        Script result = Script.of(JO.getString(key.toString()));
+        //JSONObject JO = new JSONObject(S.toString());
+       // Script result = Script.of(JO.getString(key.toString()));
+        Script result = Script.of("");
+
         if(result.equals(V))
         {
             System.out.println(true);

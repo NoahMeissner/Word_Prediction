@@ -7,6 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="untitled" level="project" />
+    <orderEntry type="library" name="jboss.slf4j.logging" level="project" />
+    <orderEntry type="library" name="stanford-corenlp-models-english-kbp" level="project" />
+    <orderEntry type="library" name="fasterxml.jackson.core.databind" level="project" />
+    <orderEntry type="library" name="LingoLibry" level="project" />
   </component>
 </module>

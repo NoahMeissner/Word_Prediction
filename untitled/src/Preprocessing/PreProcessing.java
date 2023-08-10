@@ -2,33 +2,60 @@ package Preprocessing;
 
 import lingologs.Script;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PreProcessing {
 
-    List<Script> L;
+    private List<Script> LS;
 
-    public PreProcessing(Script text){
-        this.L = cutText(text);
+    public PreProcessing(List<Script> LS)
+    {
+        this.LS = LS;
     }
 
-    /*
-        Goal is to split text into to parts to start multiprocessing part
-     */
-    private List<Script> cutText(Script S){
-        int length = S.length();
-        int mid = length /2;
+    private List<Script> Normalise (Script S)
+    {
+        if(S.includes(Script.of("ACT"))||S.includes(Script.of("SCENE")))
+        {
+            S = Script.of(" ");
+        }
+        S = S.replace("[\\r\\n]+", " ");
+        S = S.replace(","," , ");
+        S = S.replace("\\.", " . ");
+        S = S.replace(":","");
+        S = S.toLower();
+        S = S.replace("\\?"," \\?");
+        S = S.replace("!"," !");
+        S = S.replace("'s"," is");
+        S = S.replace("'re"," are");
+       // S = S.replace("is", "be");
+       // S = S.replace("are","be");
+       // S = S.replace("am","be");
 
-        Script firstHalf = S.part(0,mid);
-        Script secondHalf = S.part(mid,length);
-        System.out.println(firstHalf);
-        System.out.println(secondHalf);
-        return List.of(firstHalf, secondHalf);
+        return S.split(" ");
     }
 
+    private List<Script> deleteWhiteSpace(Script S) {
+        List<Script> LS = Normalise(S);
+        for (Script A : LS) {
+            if(A.equals(" ")||A.equals(""))
+            {
+                LS.remove(A);
+            }
+            A = A.replace(" ", "");
+        }
+        return LS;
+    }
 
+    public List<List<Script>> getListText()
+    {
+        List<List<Script>> result= new ArrayList<>();
 
-    public void getText(){
-
+        for(int i = 0; i<LS.size();i++)
+        {
+            result.add(deleteWhiteSpace(LS.get(i)));
+        }
+        return result;
     }
 }
