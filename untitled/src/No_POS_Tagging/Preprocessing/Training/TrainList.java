@@ -1,14 +1,22 @@
-package Training;
-
-import Preprocessing.PreProcessing;
+package No_POS_Tagging.Preprocessing.Training;
+import No_POS_Tagging.Preprocessing.PreProcessing;
 import lingologs.Script;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+
+/*
+ * The `TrainList` class manages script training tasks and the creation of language models.
+        * It operates on a collection of scripts, performing unigram and bigram training.
+        * The class includes methods to train and obtain unigram and bigram model weights.
+ * Usage:
+        * The TrainList class is used to train unigram and bigram models on a collection of scripts.
+        * Users can create an instance of this class, provide script pairs, and perform training
+        * to obtain unigram and bigram model weights.
+ */
 public class TrainList {
     private List<List<Script>> LS;
     private HashMap<Script, HashMap<Script, Integer>> MU;

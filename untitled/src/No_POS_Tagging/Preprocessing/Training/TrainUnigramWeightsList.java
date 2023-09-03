@@ -1,4 +1,4 @@
-package Training;
+package No_POS_Tagging.Preprocessing.Training;
 
 import lingologs.Script;
 

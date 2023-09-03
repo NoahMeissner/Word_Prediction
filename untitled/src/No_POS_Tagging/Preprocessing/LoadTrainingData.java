@@ -1,4 +1,4 @@
-package Preprocessing;
+package No_POS_Tagging.Preprocessing;
 
 import lingolava.Nexus;
 import lingologs.Script;
@@ -51,7 +51,7 @@ public class LoadTrainingData {
             {
                 if(D!= null&&res.get(D).asList()!=null)
                 {
-                    List<HashMap<Script,Script>> L = preparevalues(res.get(D).asList());
+                    List<HashMap<Script,Script>> L = prepareValues(res.get(D).asList());
                     HM.put(D.asString(),L);
                 }
             }
@@ -62,7 +62,7 @@ public class LoadTrainingData {
         return HM;
     }
 
-    private List<HashMap<Script,Script>> preparevalues(List<Nexus.DataNote> LD)
+    private List<HashMap<Script,Script>> prepareValues(List<Nexus.DataNote> LD)
     {
         List<HashMap<Script,Script>> result = new ArrayList<>();
 

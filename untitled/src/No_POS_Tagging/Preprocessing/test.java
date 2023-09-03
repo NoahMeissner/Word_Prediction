@@ -1,6 +1,4 @@
-package Preprocessing;
-
-import lingologs.Script;
+package No_POS_Tagging.Preprocessing;
 
 public class test {
 
@@ -11,7 +9,7 @@ public class test {
 
 
     public static void main(String[] args) {
-        PosTagging P = new PosTagging(Script.of("Hey i am Noah"));
+        //PosTagging P = new PosTagging(Script.of("Hey i am Noah"));
         // Text erhalten
         /*
         LoadTrainingData l = new LoadTrainingData();

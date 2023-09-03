@@ -1,52 +1,54 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lingologs.Script;
+import UI.Chat;
+import UI.Configuration;
+import UI.Tags;
+
+import java.util.Map;
+
 
 public class Main {
 
     /*
     Start of the Program
      */
-
-    private static final Script BP = new Script("""
-                /Users/noahmeissner/Documents/Data/projectreischer/untitled/src/test.json
-            """);
-
+    private static final String info = """
+            ###########
+            INFORMATION
+            PLEASE SET THE LINKS IN THE PART_OF_SPEECH_TAGGING/PATHS_SETUP FILE
+            Work of Noah Meißner
+            ###########
+            """;
 
     public static void main(String[] args) {
-        /*
-        SetUp S = new SetUp();
-        Loader L = null;
-        while(L == null)
-        {
-            L = S.start();
-        }
-
-         */
-        String jsonString = "{\"line_number\":\"5.4.45\",\"speaker\":\"PRINCE HENRY\",\"text_entry\":\"Cheerly, my lord	how fares your grace?\"}";
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            // Extrahiere die Werte aus dem JSON-String manuell
-            String lineNumber = extractValue(jsonString, "line_number");
-            String speaker = extractValue(jsonString, "speaker");
-            String textEntry = extractValue(jsonString, "text_entry");
-
-            // Verarbeite die extrahierten Werte wie gewünscht
-            System.out.println("line_number: " + lineNumber);
-            System.out.println("speaker: " + speaker);
-            System.out.println("text_entry: " + textEntry);
-        } catch (Exception e) {
-            throw new RuntimeException(e + "prepareValues");
-        }
-
-
+        test();
+        Configuration C = new Configuration();
+        System.out.println(info);
+        System.out.println("###########################");
+        System.out.println("Step 1: Configuration");
+        Map<Tags,Integer> config = C.getConfiguration();
+        System.out.println("###########################");
+        System.out.println("Step 2: Links");
+        Map<Tags,String> links = C.getLinks();
+        System.out.println("Step 3: Test System");
+        boolean T = C.getTest();
+        System.out.println("All Configured");
+        Prozessor P = new Prozessor(config, links, T);
+        Chat CH = new Chat();
     }
 
-    private static String extractValue(String jsonString, String fieldName) {
-        int startIndex = jsonString.indexOf(fieldName + "\":\"") + fieldName.length() + 3;
-        int endIndex = jsonString.indexOf("\"", startIndex);
-        return jsonString.substring(startIndex, endIndex);
+    private static void test(){
+        String s="";
+        int[] a = {3,8,5,1,8,5,3,2,7};
+        int i =0;
+        while (i <a.length){
+            if(a[i] %2 !=0){
+                s+=a[i]+a[a[i]];
+                i+=2;
+
+            }else{
+                i-=1;
+            }
+        }
+        System.out.println(s);
     }
 }
 

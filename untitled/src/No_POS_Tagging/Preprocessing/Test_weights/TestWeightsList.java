@@ -1,6 +1,6 @@
-package Test_weights;
+package No_POS_Tagging.Preprocessing.Test_weights;
 
-import Preprocessing.PreProcessing;
+import No_POS_Tagging.Preprocessing.PreProcessing;
 import lingologs.Script;
 
 import java.util.ArrayList;

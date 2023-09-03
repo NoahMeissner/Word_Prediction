@@ -1,4 +1,4 @@
-package Preprocessing;
+package No_POS_Tagging.Preprocessing;
 
 import lingologs.Script;
 
@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PreProcessing {
-
+    //asdasjdlkaaölsdkaskdjakljfalkdjakdaöldakajdökjasdkaösdkaödjaldsjadjlkadjlkasdjlkadjflkasdjflkasdjflkajdaklsdfjalskdja
+    // asdklfjasödlkjlas
     private List<Script> LS;
 
     public PreProcessing(List<Script> LS)
@@ -29,10 +30,6 @@ public class PreProcessing {
         S = S.replace("!"," !");
         S = S.replace("'s"," is");
         S = S.replace("'re"," are");
-       // S = S.replace("is", "be");
-       // S = S.replace("are","be");
-       // S = S.replace("am","be");
-
         return S.split(" ");
     }
 
@@ -47,7 +44,6 @@ public class PreProcessing {
         }
         return LS;
     }
-
     public List<List<Script>> getListText()
     {
         List<List<Script>> result= new ArrayList<>();

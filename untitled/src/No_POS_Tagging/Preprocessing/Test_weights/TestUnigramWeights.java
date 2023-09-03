@@ -1,4 +1,4 @@
-package Test_weights;
+package No_POS_Tagging.Preprocessing.Test_weights;
 
 import lingologs.Script;
 

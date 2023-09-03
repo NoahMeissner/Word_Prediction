@@ -1,4 +1,5 @@
-package Preprocessing;
+package Part_Of_Speech_Tagging;
+
 import lingologs.Script;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,24 +7,34 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PosTagging {
+public class PPos {
+    /**
+     * This class, `PPos`, manages Probabilistic Part-Of-Speech (POS) Tagging utilizing the NLTK Python Library.
+     * POS tagging is applied to text data, assigning grammatical categories to each word in a sentence.
+     * The class provides methods to perform POS tagging on a given script and obtain the POS-tagged words.
+     * It interfaces with a Python script to achieve the tagging using NLTK's capabilities.
+     * The execution time for the tagging process is measured and displayed.
+     * INPUT: Script S
+     * Output: List<Script>
+     */
 
-/*
-Dieses Skript wandelt einen Text in POS Tags um
- */
+    private final Script S;
 
-    Script S;
-
-    public PosTagging(Script S){
+    // Constructor
+    public PPos(Script S){
         this.S = S;
-        long startTime = System.currentTimeMillis(); // Startzeit erfassen
-        List<String> posTags = runPythonScript(S);
-        System.out.println(posTags);
-        long endTime = System.currentTimeMillis(); // Endzeit erfassen
-        long executionTime = endTime - startTime; // Ausführungszeit berechnen
-        System.out.println("Ausführungszeit: " + executionTime + " Millisekunden");
     }
 
+    // Method to Start Pos-Tagging Process
+    public List<String> getPosTags()
+    {
+        long startTime = System.currentTimeMillis(); // start time
+        List<String> posTags = runPythonScript(S);
+        long endTime = System.currentTimeMillis(); // end time
+        long executionTime = endTime - startTime; // calculate time
+        System.out.println("Probabilistic POS Tagging Time: " + executionTime + " MilliSeconds");
+        return posTags;
+    }
 
     private final String PythonPOSTagging = """
             try:
@@ -42,15 +53,14 @@ Dieses Skript wandelt einen Text in POS Tags um
             print(get_pos_tags(
             """;
 
-    private List<String> runPythonScript(Script sentence) {
+    private List<String> runPythonScript(Script sentence)
+    {
         List<String> posTags = new ArrayList<>();
-
         try {
             String SC = PythonPOSTagging+"\""+sentence+"\""+"))";
-            String PATHTOPYTHONINTERPRETER = "/opt/homebrew/bin/python3";
+            String PATHTOPYTHONINTERPRETER = Paths_Setup.PATH_TO_PYTHON_INTERPRETER();
             ProcessBuilder PB  = new ProcessBuilder(PATHTOPYTHONINTERPRETER, "-c",SC);
             Process process = PB.start();
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -65,5 +75,3 @@ Dieses Skript wandelt einen Text in POS Tags um
         return posTags;
     }
 }
-
-
