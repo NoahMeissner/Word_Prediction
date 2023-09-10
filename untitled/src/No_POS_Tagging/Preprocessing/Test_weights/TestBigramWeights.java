@@ -6,10 +6,10 @@ import java.util.*;
 
 public class TestBigramWeights {
 
-    private HashMap<Script, HashMap<Script, Integer>> HM;
-    private List<List<Script>> testSet;
+    private final HashMap<Script, HashMap<Script, Integer>> HM;
+    private final List<List<Script>> testSet;
 
-    private int simi;
+    private final int simi;
     public TestBigramWeights(HashMap<Script, HashMap<Script, Integer>> HM, List<List<Script>> testSet,int simi)
     {
         this.HM = HM;

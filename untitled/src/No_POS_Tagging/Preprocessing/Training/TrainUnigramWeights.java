@@ -5,11 +5,19 @@ import lingologs.Script;
 import java.util.HashMap;
 import java.util.List;
 
-public class TrainUnigramWeightsList {
+/**
+ * The `TrainUnigramWeights` class is responsible for training unigram models on a collection of scripts.
+ * It takes a list of lists of `Script` objects and calculates the unigram weights between consecutive scripts.
+ * Methods:
+ * getWeights():
+ * Returns the calculated unigram weights as a hashmap of script pairs with associated frequencies.
+ **/
 
-    private List<List<Script>> LS;
+public class TrainUnigramWeights {
 
-    public TrainUnigramWeightsList(List<List<Script>> LS)
+    private final List<List<Script>> LS;
+
+    public TrainUnigramWeights(List<List<Script>> LS)
     {
         this.LS = LS;
     }
@@ -20,7 +28,7 @@ public class TrainUnigramWeightsList {
         return setWeights(LS);
     }
 
-    private static HashMap<Script, HashMap<Script,Integer>> setWeights(List<List<Script>> Ls){
+    private HashMap<Script, HashMap<Script,Integer>> setWeights(List<List<Script>> Ls){
         HashMap<Script, HashMap<Script,Integer>> HM = new HashMap<>();
 
         for(List<Script> L : Ls)

@@ -1,14 +1,12 @@
 package No_POS_Tagging.Preprocessing.Training;
-
 import lingologs.Script;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
 /**
- * The `TrainBigramWeightsList` class is responsible for training bigram models on a collection of scripts.
+ * The `TrainBig-ramWeights` class is responsible for training bigram models on a collection of scripts.
     * It takes a list of lists of `Script` objects and calculates the bigram weights between consecutive scripts.
     * The class provides a method to obtain the calculated bigram weights.
  * Methods:
@@ -17,16 +15,17 @@ import java.util.List;
  **/
 
 
-public class TrainBigramWeightsList {
-    private List<List<Script>> LS;
+public class TrainBigramWeights {
+    private final List<List<Script>> LS;
 
     // Constructor
-    public TrainBigramWeightsList(List<List<Script>> LS)
+    public TrainBigramWeights(List<List<Script>> LS)
     {
         this.LS = LS;
     }
 
-    private List<Script> mB(List<Script> L)
+    // This method makes Bigrams
+    private List<Script> makeBigrm(List<Script> L)
     {
         List<Script> result = new ArrayList<>();
         for (int i = 0; i<L.size();i++)
@@ -54,7 +53,7 @@ public class TrainBigramWeightsList {
         HashMap<Script, HashMap<Script,Integer>> HM = new HashMap<>();
         for(List<Script> L:LS)
         {
-            L = mB(L);
+            L = makeBigrm(L);
             for(int i = 0; i< L.size();i++)
             {
                 if(i+1<L.size())

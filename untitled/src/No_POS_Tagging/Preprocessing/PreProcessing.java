@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PreProcessing {
-    //asdasjdlkaaölsdkaskdjakljfalkdjakdaöldakajdökjasdkaösdkaödjaldsjadjlkadjlkasdjlkadjflkasdjflkasdjflkajdaklsdfjalskdja
-    // asdklfjasödlkjlas
-    private List<Script> LS;
+    private final List<Script> LS;
 
     public PreProcessing(List<Script> LS)
     {
@@ -35,12 +33,12 @@ public class PreProcessing {
 
     private List<Script> deleteWhiteSpace(Script S) {
         List<Script> LS = Normalise(S);
-        for (Script A : LS) {
-            if(A.equals(" ")||A.equals(""))
+        for (int i = 0; i<LS.size(); i++) {
+            if(LS.get(i).equals(Script.of(" "))||LS.get(i).equals(Script.of("")))
             {
-                LS.remove(A);
+                LS.remove(LS.get(i));
             }
-            A = A.replace(" ", "");
+            LS.set(i,LS.get(i).replace(" ", ""));
         }
         return LS;
     }
@@ -48,9 +46,8 @@ public class PreProcessing {
     {
         List<List<Script>> result= new ArrayList<>();
 
-        for(int i = 0; i<LS.size();i++)
-        {
-            result.add(deleteWhiteSpace(LS.get(i)));
+        for (Script l : LS) {
+            result.add(deleteWhiteSpace(l));
         }
         return result;
     }

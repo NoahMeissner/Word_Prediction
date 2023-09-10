@@ -1,5 +1,12 @@
 package No_POS_Tagging.Preprocessing;
 
+import No_POS_Tagging.Preprocessing.Test_weights.TestWeightsList;
+import No_POS_Tagging.Preprocessing.Training.TrainList;
+import lingologs.Script;
+
+import java.util.HashMap;
+import java.util.List;
+
 public class test {
 
     public test() {
@@ -11,19 +18,19 @@ public class test {
     public static void main(String[] args) {
         //PosTagging P = new PosTagging(Script.of("Hey i am Noah"));
         // Text erhalten
-        /*
+
         LoadTrainingData l = new LoadTrainingData();
-        HashMap<String,List<HashMap<Script,Script>>> S = l.getData();
+        HashMap<String, List<HashMap<Script,Script>>> S = l.getData();
         System.out.println("Data loaded");
         TrainList T = new TrainList(S,"Henry V");
         System.out.println("Weights initialisiert");
         System.out.println(T.getWeights());
-        //TestWeightsList TE = new TestWeightsList(S,"Henry V",T.getWeights());
+        TestWeightsList TE = new TestWeightsList(S,"Henry V",T.getWeights());
 
-         */
+
         System.out.println("Train Weights + Test weights initialisiert");
         // TODO Unigramme
-        //System.out.println(TE.calculateProbability(true,1,true));
+        System.out.println(TE.calculateProbability(true,1,true));
         // TODO Bigramme
       // System.out.println(TE.calculateProbability(false,3,false));
     }

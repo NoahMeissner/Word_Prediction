@@ -111,7 +111,7 @@ public class Configuration {
         if(A.equals("true")){
             return true;
         }
-        if(A.equals(false)){
+        if(A.equals("false")){
             return false;
         }
         else{

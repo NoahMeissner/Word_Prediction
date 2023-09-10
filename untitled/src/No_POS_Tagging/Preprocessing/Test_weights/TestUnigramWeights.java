@@ -87,7 +87,7 @@ public class TestUnigramWeights {
             }
             if(result.get(i)==0)
             {
-                    fa++;
+                fa++;
             }
             if(result.get(i)==2)
             {

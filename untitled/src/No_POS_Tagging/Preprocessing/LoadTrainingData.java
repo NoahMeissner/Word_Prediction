@@ -11,6 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The 'LoadTrainingData' class is responsible for loading the Data from the .json file.
+ * It reads the File and extract the information from the JSON Structure.
+ * Methods:
+    * getString() -> Load the .jsonFile as String
+    * prepareData() -> separate each works
+    * prepareValues() -> extract Information of each line
+ */
+
 public class LoadTrainingData {
 
     public LoadTrainingData()
@@ -26,7 +35,7 @@ public class LoadTrainingData {
         String result = "";
 
         try (BufferedReader reader = new BufferedReader(
-                new FileReader("/Users/noahmeissner/Documents/github/Word_Prediction/json/data.json"))) {
+                new FileReader("json/data.json"))) {
             String line;
             StringBuilder jsonContent = new StringBuilder();
 

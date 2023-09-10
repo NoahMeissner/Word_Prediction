@@ -8,8 +8,18 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jboss.slf4j.logging" level="project" />
-    <orderEntry type="library" name="stanford-corenlp-models-english-kbp" level="project" />
     <orderEntry type="library" name="fasterxml.jackson.core.databind" level="project" />
     <orderEntry type="library" name="LingoLibry" level="project" />
+    <orderEntry type="library" name="stanford-corenlp-4.5.4" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/Stanford/stanford-corenlp-4.5.4/stanford-corenlp-4.5.4-models.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="ejml-simple-0.39" level="project" />
   </component>
 </module>

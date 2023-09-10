@@ -18,14 +18,9 @@ import java.util.concurrent.*;
         * to obtain unigram and bigram model weights.
  */
 public class TrainList {
-    private List<List<Script>> LS;
-    private HashMap<Script, HashMap<Script, Integer>> MU;
-    private HashMap<Script, HashMap<Script, Integer>> MB;
-    private HashMap<String, List<HashMap<Script,Script>>> HS;
+    private final List<List<Script>> LS;
 
-    private String S;
-
-    class TrainCallable implements Callable<HashMap<Script, HashMap<Script,Integer>>>
+    static class TrainCallable implements Callable<HashMap<Script, HashMap<Script,Integer>>>
     {
         private final List<List<Script>> LS;
         private final boolean Bigram;
@@ -36,13 +31,13 @@ public class TrainList {
         }
 
         @Override
-        public HashMap<Script, HashMap<Script, Integer>> call() throws Exception {
+        public HashMap<Script, HashMap<Script, Integer>> call() {
             if(Bigram){
-                TrainBigramWeightsList T = new TrainBigramWeightsList(LS);
+                TrainBigramWeights T = new TrainBigramWeights(LS);
                 return T.getWeights();
             }
             else{
-                TrainUnigramWeightsList T = new TrainUnigramWeightsList(LS);
+                TrainUnigramWeights T = new TrainUnigramWeights(LS);
                 return T.getWeights();
             }
         }
@@ -88,13 +83,8 @@ public class TrainList {
     {
         try
         {
-            long X1 = System.nanoTime();
             Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>>
                     R = multiParsing(LS);
-            long X2 = System.nanoTime();
-            System.out.println("\r\ntime: Multilearning"+
-                    ": "+(double)(X2-X1)/1_000_000_000);
-
             return R;
         }
         catch (Exception E)

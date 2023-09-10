@@ -26,17 +26,15 @@ public class PPos {
     }
 
     // Method to Start Pos-Tagging Process
-    public List<String> getPosTags()
+    public List<Script> getPosTags()
     {
-        long startTime = System.currentTimeMillis(); // start time
-        List<String> posTags = runPythonScript(S);
-        long endTime = System.currentTimeMillis(); // end time
-        long executionTime = endTime - startTime; // calculate time
-        System.out.println("Probabilistic POS Tagging Time: " + executionTime + " MilliSeconds");
+        Preprocessing P = new Preprocessing(S);
+        List<Script> posTags = runPythonScript(P.getS());
         return posTags;
     }
 
     private final String PythonPOSTagging = """
+            import subprocess
             try:
                 import nltk
             except ImportError:
@@ -45,33 +43,40 @@ public class PPos {
                 import nltk
                 nltk.download('punkt')
                 nltk.download('averaged_perceptron_tagger')
-                
+                        
             def get_pos_tags(sentence):
                tokens = nltk.word_tokenize(sentence)
                pos_tags = nltk.pos_tag(tokens)
                return pos_tags
-            print(get_pos_tags(
+               
+            def format_pos_tags(pos_tags):
+                formatted_tags = []
+                for word, tag in pos_tags:
+                    formatted_tags.extend([word, tag])
+                formatted_tags = [tag.replace("'", "") for tag in formatted_tags]
+                return formatted_tags   
+            
+            print(format_pos_tags(get_pos_tags(
             """;
 
-    private List<String> runPythonScript(Script sentence)
+    private List<Script> runPythonScript(Script sentence)
     {
-        List<String> posTags = new ArrayList<>();
+        List<Script> posTags = new ArrayList<>();
         try {
-            String SC = PythonPOSTagging+"\""+sentence+"\""+"))";
+            String SC = PythonPOSTagging+"\""+sentence+"\""+")))";
             String PATHTOPYTHONINTERPRETER = Paths_Setup.PATH_TO_PYTHON_INTERPRETER();
             ProcessBuilder PB  = new ProcessBuilder(PATHTOPYTHONINTERPRETER, "-c",SC);
             Process process = PB.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                posTags.add(line);
+                posTags.add(Script.of(line));
             }
 
             process.waitFor();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
         return posTags;
     }
 }
