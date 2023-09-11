@@ -28,13 +28,13 @@ public class TrainUnigramWeightsList {
         return setWeights(LS);
     }
 
-    public HashMap<PosTags,HashMap<PosTags,Integer>> getTags()
+    public HashMap<Script,HashMap<PosTags,Integer>> getTags()
     {
         return setTags(LS);
     }
 
-    private HashMap<PosTags, HashMap<PosTags, Integer>> setTags(List<List<Couple<Script, PosTags>>> LA) {
-        HashMap<PosTags, HashMap<PosTags, Integer>> res = new HashMap<>();
+    private HashMap<Script, HashMap<PosTags, Integer>> setTags(List<List<Couple<Script, PosTags>>> LA) {
+        HashMap<Script, HashMap<PosTags, Integer>> res = new HashMap<>();
 
         for(List<Couple<Script, PosTags>> L : LA)
         {
@@ -52,8 +52,8 @@ public class TrainUnigramWeightsList {
                         {
                             number += HP.get(nextP) ;
                         }
-                        HP.put(nextP,number);
-                        res.put(currentP,HP);
+                        HP.put(PosTags.valueOf(nextP.name()),number);
+                        res.put(Script.of(currentP.name()),HP);
                     }
                 }
                 else{
@@ -62,7 +62,7 @@ public class TrainUnigramWeightsList {
                         HashMap<PosTags,Integer> HP = new HashMap<>();
                         PosTags nextP = L.get(i+1).getValue();
                         HP.put(nextP,1); // one because first time
-                        res.put(currentP,HP);
+                        res.put(Script.of(currentP.name()),HP);
                     }
                 }
             }

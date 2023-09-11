@@ -12,13 +12,21 @@ public class TestWeightsList {
 
 
     private List<List<Script>> HS;
+
+    private final int simi = 1;
+    private final boolean UOB;
+
+    private final boolean learn;
     private Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> Weights;
     public TestWeightsList(HashMap<String, List<HashMap<Script,Script>>> HS,
                            String test,
-                           Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> Weights)
+                           Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> Weights,
+                           boolean UOB, boolean learn)
     {
         this.HS = reduceMap(HS,test);
         this.Weights = Weights;
+        this.UOB = UOB;
+        this.learn = learn;
     }
 
     private List<List<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS, String test)
@@ -41,8 +49,8 @@ public class TestWeightsList {
     }
 
 
-    public Script calculateProbability (boolean U,int simi,boolean learn){
-        if(U)
+    public Script calculateProbability (){
+        if(UOB)
         {
             HashMap<Script, HashMap<Script, Integer>> Unigram = Weights.getKey();
             TestUnigramWeights T = new TestUnigramWeights(Unigram,HS,simi);

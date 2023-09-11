@@ -38,7 +38,7 @@ public class PreProcessing {
             {
                 LS.remove(LS.get(i));
             }
-            LS.set(i,LS.get(i).replace(" ", ""));
+           // LS.set(i,LS.get(i).replace(" ", ""));
         }
         return LS;
     }

@@ -57,7 +57,7 @@ public class ProcessPos {
             String token =",";
             if(LS.get(i).length()>=3)
             {
-                token = LS.get(i).substring(2, LS.get(i).length()-1);
+                token = LS.get(i).replaceAll("'| ","");
             }
             res.add(new Couple<>(Script.of(token), getPosTag(Script.of(LS.get(i+1)))));
 
@@ -70,7 +70,9 @@ public class ProcessPos {
         List<String> tokens = new ArrayList<>();
         int start = 0;
         for (int i = 0; i < S.length(); i++) {
-            if (S.charAt(i) == ',') {
+            if (S.charAt(i) == ',' &&
+                    ( S.charAt(i + 1) != '\''))
+            {
                 tokens.add(S.substring(start, i));
                 start = i + 1;
             }
@@ -80,12 +82,14 @@ public class ProcessPos {
 
     }
 
-
-
     private PosTags getPosTag(Script characts) {
         String S = characts.toString();
         try{
-            String D = S.substring(2,S.length()-1);
+            String D = S;
+            if(prob)
+            {
+                D = S.substring(2,S.length()-1);
+            }
             //System.out.println(D);
             return switch (D) {
                 case "NN", "NNP", "NNPS", "NNS" -> PosTags.Noun;

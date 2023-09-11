@@ -9,49 +9,20 @@ import java.util.*;
 
 public class TestBigramWeights {
 
-    private final List<Script> LS;
+    private final List<List<Couple<Script,PosTags>>> LS;
     private final boolean ROP;
     private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
-            HashMap<Class<?>, HashMap<PosTags, Integer>>> C;
+            HashMap<Script, HashMap<PosTags, Integer>>> C;
 
     private final boolean learn;
 
-    public TestBigramWeights(List<Script> LS, boolean ROP,boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
-            HashMap<Class<?>, HashMap<PosTags, Integer>>> C )
+    public TestBigramWeights(List<List<Couple<Script,PosTags>>> LS, boolean ROP,boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+            HashMap<Script, HashMap<PosTags, Integer>>> C )
     {
         this.learn = learn;
         this.ROP = ROP;
         this.LS = LS;
         this.C = C;
-    }
-
-    private List<List<Couple<Script,PosTags>>> makeBigrams(List<Script> L)
-
-    {
-        StringBuilder SB = new StringBuilder();
-        for(Script S: L)
-        {
-            SB.append(S);
-            SB.append(" $ ");
-        }
-
-        List<Couple<Script,PosTags>> LC = processList(Script.of(SB.toString()));
-
-        List<List<Couple<Script,PosTags>>> res = new ArrayList<>();
-        List<Couple<Script,PosTags>> ZR = new ArrayList<>();
-
-        for(int i = 0; i < LC.size();i++)
-        {
-            if(LC.get(i).getKey().equals(Script.of('$')))
-            {
-                res.add(ZR);
-                ZR = new ArrayList<>();
-            }
-            else {
-                ZR.add(LC.get(i));
-            }
-        }
-        return res;
     }
 
 
@@ -60,9 +31,9 @@ public class TestBigramWeights {
         int positive = 0;
         int negative = 0;
         int notFound = 0;
-        HashMap<Class<?>, HashMap<PosTags, Integer>> tags = C.getValue();
+        HashMap<Script, HashMap<PosTags, Integer>> tags = C.getValue();
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> text_weights = C.getKey();
-        List<List<Couple<Script,PosTags>>> L = makeBigrams(LS);
+        List<List<Couple<Script,PosTags>>> L = LS;
         System.out.println(L);
 
         for(List<Couple<Script,PosTags>> POSList: L)
@@ -97,6 +68,14 @@ public class TestBigramWeights {
                                         {
                                             positive++;
                                             System.out.println("positive");
+                                            if(learn)
+                                            {
+                                                HMP.put(keyMaxPos,HMP.get(maxPos)+1);
+                                                tags.put(tagB,HMP);
+                                                HMS.put(R,HMS.get(R)+1);
+                                                HMT.put(keyMaxPos,HMS);
+                                                text_weights.put(textB,HMT);
+                                            }
                                         }
                                         else {
                                             negative++;
@@ -110,15 +89,18 @@ public class TestBigramWeights {
                         }
                         else{
                             HashMap<PosTags, HashMap<Script,Integer>> HM = text_weights.get(textB);
-                            if(POSList.get(i+2).getKey().equals(findScriptWithMaxValue(HM)))
+                            Script S = findScriptWithMaxValue(HM);
+                            if(POSList.get(i+2).getKey().equals(S))
                             {
                                 positive++;
-                                System.out.println("positiv");
+                                if(learn)
+                                {
+                                    // TODO learn noch machen
+                                }
 
                             }
                             else{
                                 negative++;
-                                System.out.println("negative"+POSList.get(i+2)+":"+findScriptWithMaxValue(HM));
                             }
                         }
                     }
@@ -140,39 +122,6 @@ public class TestBigramWeights {
                 .map(Map.Entry::getKey)
                 .orElse(null);
     }
-
-    private HashMap<Script, HashMap<PosTags, Integer>> convertTags
-            (HashMap<Class<?>, HashMap<PosTags, Integer>> T)
-    {
-        try{
-            HashMap<Script, HashMap<PosTags, Integer>> res = new HashMap<>();
-            for (Map.Entry<Class<?>, HashMap<PosTags, Integer>> entry : T.entrySet()) {
-                Class<?> scriptClass = entry.getKey();
-                HashMap<PosTags, Integer> posTagsMap = entry.getValue();
-                res.put((Script) scriptClass.newInstance(),posTagsMap);
-            }
-            return res;
-        }catch (Exception e)
-        {
-            System.out.println("Convert funktioniert nicht"+ e);
-            return null;
-        }
-    }
-
-    private List<Couple<Script, PosTags>> processList(Script ps) {
-        if(ROP)
-        {
-            PPos PP = new PPos(ps);
-            ProcessPos P = new ProcessPos(PP.getPosTags().get(0));
-            return P.getCouples();
-        }
-        else{
-            RPos R = new RPos(ps);
-            ProcessPos P = new ProcessPos(R.getPosTags());
-            return P.getCouples();
-        }
-    }
-
 
     private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Class<?>, HashMap<PosTags, Integer>>> learn (Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,

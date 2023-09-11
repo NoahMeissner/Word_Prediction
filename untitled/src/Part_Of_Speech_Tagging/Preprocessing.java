@@ -15,6 +15,7 @@ public class Preprocessing {
     {
         S = S.replace("[\\r|\\n]+", "");
         S = S.replace(","," , ");
+        S = S.replace("\\."," \\. ");
         S = S.replace(":","");
         S = S.toLower();
         S = S.replace("'s"," is");

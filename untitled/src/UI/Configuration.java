@@ -14,15 +14,23 @@ public class Configuration {
             Tags.preprocessing,"With Pre-Processing(1) or not(2)?",
             Tags.howprocess,"Rule Based(1) or Probablistic POS-Tagging(2)?",
             Tags.ngrams,"Bigrams(1) or Unigrams(2) or Both(3)?",
-            Tags.learn,"Learning during Processing(1) or not(2)?",
-            Tags.pretrained,"Fine Tune Pretrained Weights(1) or not(2)?"
+            Tags.learn,"Learning during Processing(1) or not(2)?"
+    );
+
+    private Map<Tags,Integer> answer = Map.of(
+            Tags.postag, 0,
+            Tags.preprocessing,0,
+            Tags.howprocess,0,
+            Tags.ngrams,0,
+            Tags.learn,0
     );
 
     public Configuration(){
     }
 
     public Map<Tags,Integer> getConfiguration(){
-        return setup();
+        answer = setup();
+        return answer;
     }
 
     public Map<Tags,String> getLinks(){

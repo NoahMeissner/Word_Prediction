@@ -18,22 +18,16 @@ public class TrainList {
     private final boolean UOB;
 
 
-    public Couple<HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>,HashMap<Class<?>, HashMap<PosTags, Integer>>>
+    public Couple<HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>,HashMap<Script, HashMap<PosTags, Integer>>>
     trainWeights()
     {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        Couple<HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>,HashMap<Class<?>, HashMap<PosTags, Integer>>>
+        Couple<HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>,HashMap<Script, HashMap<PosTags, Integer>>>
                 res = new Couple<>();
         List<Callable<Object>> tasks = new ArrayList<>();
         Callable<Object> getWeightsTask = this::getWeights;
         Callable<Object> getPOSWeightsTask = () -> {
-            if(UOB)
-            {
-                return getPOSWeights(PosTags.class);
-            }
-            else {
-                return getPOSWeights(Script.class);
-            }
+            return getPOSWeights();
         };
         tasks.add(getWeightsTask);
         tasks.add(getPOSWeightsTask);
@@ -42,8 +36,8 @@ public class TrainList {
             HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>> weightsResult =
                     (HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>) futures.get(0).get();
 
-            HashMap<Class<?>, HashMap<PosTags, Integer>> posWeightsResult =
-                    (HashMap<Class<?>, HashMap<PosTags, Integer>>) futures.get(1).get();
+            HashMap<Script, HashMap<PosTags, Integer>> posWeightsResult =
+                    (HashMap<Script, HashMap<PosTags, Integer>>) futures.get(1).get();
 
             res = new Couple<>(weightsResult,posWeightsResult);
             executorService.shutdown();
@@ -75,16 +69,16 @@ public class TrainList {
         }
     }
 
-    private  <T> HashMap<T, HashMap<PosTags, Integer>> getPOSWeights (Class<T> k)
+    private  HashMap<Script, HashMap<PosTags, Integer>> getPOSWeights ()
     {
         if(UOB)
         {
             TrainUnigramWeightsList T = new TrainUnigramWeightsList(LS);
-            return (HashMap<T, HashMap<PosTags, Integer>>) T.getTags();
+            return (HashMap<Script, HashMap<PosTags, Integer>>) T.getTags();
         }
         else{
             TrainBigramWeightsList T = new TrainBigramWeightsList(LS);
-            return (HashMap<T, HashMap<PosTags, Integer>>) T.getTags();
+            return (HashMap<Script, HashMap<PosTags, Integer>>) T.getTags();
         }
     }
 
@@ -94,12 +88,14 @@ public class TrainList {
     prepareMap(HashMap<String, List<HashMap<Script, Script>>> HS, String testWork,boolean ROP)
     {
         List<List<Couple<Script, PosTags>>> result = new ArrayList<>();
+
         for(String D : HS.keySet())
         {
             if(!D.equals(testWork))
             {
-                List<Couple<Script,PosTags>> LZ;
                 StringBuilder SB = new StringBuilder();
+
+                List<Couple<Script,PosTags>> LZ;
                 for(HashMap<Script,Script> H:HS.get(D))
                 {
                     SB.append(H.get(Script.of("text_entry")));
@@ -119,6 +115,7 @@ public class TrainList {
                 result.add(LZ);
             }
         }
+
         return result;
     }
 }
