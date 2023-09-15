@@ -82,8 +82,8 @@ public class ProcessPos {
 
     }
 
-    private PosTags getPosTag(Script characts) {
-        String S = characts.toString();
+    private PosTags getPosTag(Script C) {
+        String S = C.toString();
         try{
             String D = S;
             if(prob)

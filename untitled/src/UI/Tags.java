@@ -8,5 +8,6 @@ public enum Tags {
     learn,
     pretrained,
     text,
+    config,
     result
 }

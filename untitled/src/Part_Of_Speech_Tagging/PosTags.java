@@ -19,37 +19,22 @@ public enum PosTags {
     Default;
 
     public static PosTags fromInt(int intValue) {
-        switch (intValue) {
-            case 0:
-                return Noun;
-            case 1:
-                return Conjunction;
-            case 2:
-                return Numeral;
-            case 3:
-                return Determiner;
-            case 4:
-                return Adjective;
-            case 5:
-                return Adverb;
-            case 6:
-                return to;
-            case 7:
-                return Verb;
-            case 8:
-                return Existential;
-            case 9:
-                return Preposition;
-            case 10:
-                return list;
-            case 11:
-                return Auxilary;
-            case 12:
-                return Pronoun;
-            case 13:
-                return Interjection;
-            default:
-                return Default;
-        }
+        return switch (intValue) {
+            case 0 -> Noun;
+            case 1 -> Conjunction;
+            case 2 -> Numeral;
+            case 3 -> Determiner;
+            case 4 -> Adjective;
+            case 5 -> Adverb;
+            case 6 -> to;
+            case 7 -> Verb;
+            case 8 -> Existential;
+            case 9 -> Preposition;
+            case 10 -> list;
+            case 11 -> Auxilary;
+            case 12 -> Pronoun;
+            case 13 -> Interjection;
+            default -> Default;
+        };
     }
 }

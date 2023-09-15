@@ -24,8 +24,8 @@ public class TrainBigramWeights {
         this.LS = LS;
     }
 
-    // This method makes Bigrams
-    private List<Script> makeBigrm(List<Script> L)
+    // This method makes Bigram
+    private List<Script> makeBigram(List<Script> L)
     {
         List<Script> result = new ArrayList<>();
         for (int i = 0; i<L.size();i++)
@@ -53,7 +53,7 @@ public class TrainBigramWeights {
         HashMap<Script, HashMap<Script,Integer>> HM = new HashMap<>();
         for(List<Script> L:LS)
         {
-            L = makeBigrm(L);
+            L = makeBigram(L);
             for(int i = 0; i< L.size();i++)
             {
                 if(i+1<L.size())

@@ -1,5 +1,6 @@
 package No_POS_Tagging.Preprocessing.Test_weights;
 
+import lingolava.Tuple;
 import lingologs.Script;
 
 import java.util.*;
@@ -7,9 +8,9 @@ import java.util.*;
 public class TestUnigramWeights {
 
     private HashMap<Script, HashMap<Script, Integer>> HM;
-    private List<List<Script>> testSet;
+    private final List<List<Script>> testSet;
 
-    private int simi;
+    private final int simi;
     public TestUnigramWeights(HashMap<Script, HashMap<Script, Integer>> HM, List<List<Script>> testSet,int simi)
     {
         this.HM = HM;
@@ -17,14 +18,14 @@ public class TestUnigramWeights {
         this.testSet = testSet;
     }
 
-    public Script getResults(boolean learn)
+    public Tuple.Quaple<Integer,Integer,Integer,Integer> getResults(boolean learn)
     {
         return calculate_any_value(testSet,HM,learn);
     }
 
-    private Script calculate_any_value(List<List<Script>> scripts,
-                                       HashMap<Script, HashMap<Script,Integer>> hm,
-                                       boolean learn) {
+    private Tuple.Quaple<Integer,Integer,Integer,Integer> calculate_any_value(List<List<Script>> scripts,
+                                             HashMap<Script, HashMap<Script,Integer>> hm,
+                                             boolean learn) {
         List<Integer> result = new ArrayList<>();
 
         for(List<Script> L : scripts)
@@ -95,7 +96,7 @@ public class TestUnigramWeights {
             }
 
         }
-        return Script.of("Wir haben"+ tr+"positiv"+":"+ (float)tr/(tr+fa+no)+"Succes Rate :"+"Wir haben "+fa+"falsch vorhersagen und "+ no+"nicht gefunden");
+        return new Tuple.Quaple<>(tr,fa,no,0);
     }
 
     public List<Script> getMaxValues(HashMap<Script, Integer> hashMap, int n) {

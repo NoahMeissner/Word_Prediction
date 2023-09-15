@@ -10,17 +10,15 @@ import java.util.*;
 public class TestBigramWeights {
 
     private final List<List<Couple<Script,PosTags>>> LS;
-    private final boolean ROP;
-    private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    private final Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C;
 
     private final boolean learn;
 
-    public TestBigramWeights(List<List<Couple<Script,PosTags>>> LS, boolean ROP,boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    public TestBigramWeights(List<List<Couple<Script,PosTags>>> LS,boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C )
     {
         this.learn = learn;
-        this.ROP = ROP;
         this.LS = LS;
         this.C = C;
     }
@@ -28,9 +26,7 @@ public class TestBigramWeights {
 
     public Triple<Integer,Integer,Integer> testWeights()
     {
-        int positive = 0;
-        int negative = 0;
-        int notFound = 0;
+        int positive = 0, negative = 0, notFound = 0;
         HashMap<Script, HashMap<PosTags, Integer>> tags = C.getValue();
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> text_weights = C.getKey();
         List<List<Couple<Script,PosTags>>> L = LS;
@@ -95,7 +91,7 @@ public class TestBigramWeights {
                                 positive++;
                                 if(learn)
                                 {
-                                    // TODO learn noch machen
+                                    //TODO learn noch machen
                                 }
 
                             }
@@ -121,12 +117,5 @@ public class TestBigramWeights {
                 .max(Comparator.comparingInt(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
                 .orElse(null);
-    }
-
-    private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
-            HashMap<Class<?>, HashMap<PosTags, Integer>>> learn (Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
-            HashMap<Class<?>, HashMap<PosTags, Integer>>> C)
-    {
-        return C;
     }
 }

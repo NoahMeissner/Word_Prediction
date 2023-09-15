@@ -29,8 +29,7 @@ public class PPos {
     public List<Script> getPosTags()
     {
         Preprocessing P = new Preprocessing(S);
-        List<Script> posTags = runPythonScript(P.getS());
-        return posTags;
+        return runPythonScript(P.getS());
     }
 
     private final String PythonPOSTagging = """
@@ -64,8 +63,8 @@ public class PPos {
         List<Script> posTags = new ArrayList<>();
         try {
             String SC = PythonPOSTagging+"\""+sentence+"\""+")))";
-            String PATHTOPYTHONINTERPRETER = Paths_Setup.PATH_TO_PYTHON_INTERPRETER();
-            ProcessBuilder PB  = new ProcessBuilder(PATHTOPYTHONINTERPRETER, "-c",SC);
+            String P = Paths_Setup.PATH_TO_PYTHON_INTERPRETER();
+            ProcessBuilder PB  = new ProcessBuilder(P, "-c",SC);
             Process process = PB.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;

@@ -10,17 +10,15 @@ import java.util.*;
 public class TestUnigramWeights {
 
     private final boolean learn;
-    private final boolean ROP;
-    private List<List<Couple<Script,PosTags>>> LS;
+    private final List<List<Couple<Script,PosTags>>> LS;
     private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C;
 
 
-    public TestUnigramWeights(List<List<Couple<Script,PosTags>>> LS, boolean ROP, boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    public TestUnigramWeights(List<List<Couple<Script,PosTags>>> LS, boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C )
     {
         this.learn = learn;
-        this.ROP = ROP;
         this.LS = LS;
         this.C = C;
     }
@@ -31,9 +29,8 @@ public class TestUnigramWeights {
         int notFound = 0;
         HashMap<Script, HashMap<PosTags, Integer>> tags = C.getValue();
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> text_weights = C.getKey();
-        List<List<Couple<Script,PosTags>>> L = LS;
 
-        for(List<Couple<Script,PosTags>> POSList: L)
+        for(List<Couple<Script,PosTags>> POSList: LS)
         {
             for(int i = 0; i<POSList.size(); i++)
             {
