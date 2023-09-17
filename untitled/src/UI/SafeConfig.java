@@ -2,7 +2,10 @@ package UI;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lingologs.Script;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +16,7 @@ import java.util.Map;
 public class SafeConfig {
 
     private final Path P = Paths.get("untitled/src/JSON/config.json");
+    private final Path PT = Paths.get("untitled/src/JSON/text.txt");
 
     public SafeConfig(Map<Tags, Integer> M)
     {
@@ -24,6 +28,35 @@ public class SafeConfig {
     {
 
     }
+
+    public SafeConfig(Script S, String link)
+    {
+        safeText(S,0, link);
+    }
+
+    private void safeText(Script S,int i, String link ) {
+        try {
+            File F = PT.toFile();
+            if(link != null)
+            {
+                F = new File(link);
+            }
+            FileWriter writer = new FileWriter(PT.toFile());
+
+            writer.write(S.toString());
+
+            writer.close();
+
+            System.out.println("Text successful saved");
+        } catch (IOException e) {
+            System.err.println("Error while Saving "+ e.getMessage());
+            if(i<3)
+            {
+                safeText(S,i+1, link);
+            }
+        }
+    }
+
 
     public Map<Tags,Integer> getConfig()
     {

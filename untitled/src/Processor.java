@@ -37,8 +37,6 @@ public class Processor {
 
     private Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> MNP;
 
-    private final Map<String, Map<String,Integer>> weightsOPos = new HashMap();
-
     public Processor(Map<Tags,Integer> config, Map<Tags,String> links, boolean testConfig){
         this.config = config;
         this.links= links;
@@ -64,14 +62,14 @@ public class Processor {
         if(postag){
             if(!(config.get(Tags.config)==1)) {
                 LoadTrainingData LT = new LoadTrainingData();
-                TrainListP TP = new TrainListP(LT.getData(), testData, howprocess, ngrams); // TODO Preprocessing fehlt
+                TrainListP TP = new TrainListP(LT.getData(), testData, howprocess, ngrams,preprocessing);
                 Loader L = new Loader(TP.trainWeights());
             }
         }
         else{
             if(!(config.get(Tags.config)==1)) {
                 LoadTrainingData LT = new LoadTrainingData();
-                TrainListNP TNP = new TrainListNP(LT.getData(), testData); // TODO Preprocessing
+                TrainListNP TNP = new TrainListNP(LT.getData(), testData,preprocessing);
                 Loader L = new Loader(TNP.getWeights());
             }
         }
@@ -91,10 +89,10 @@ public class Processor {
         Loader L = new Loader();
         if(postag )
         {
-            Chat C = new Chat(L.getDataP(),UOB,ROP);
+            Chat C = new Chat(L.getDataP(),UOB,ROP, links,preprocessing);
         }
         else{
-            Chat C = new Chat(L.getDataNP(),UOB);
+            Chat C = new Chat(L.getDataNP(),UOB, links,preprocessing);
         }
     }
 
@@ -105,17 +103,13 @@ public class Processor {
         if(postag)
         {
             CP = L.getDataP();
-            TestWeightsListP TP = new TestWeightsListP(ngrams,CP,howprocess,learn); // Todo Preprocessing
-            TP.testWeights(LT.getData(),testData); // TODO Get als TRIPLE
+            TestWeightsListP TP = new TestWeightsListP(ngrams,CP,howprocess,learn,preprocessing);
+            TP.testWeights(LT.getData(),testData);
         }
         else{
             MNP = L.getDataNP();
-            TestWeightsListNP TNP = new TestWeightsListNP(LT.getData(),testData,MNP, ngrams,learn);
-            System.out.println(TNP.testWeights()); // TODO get as triple
+            TestWeightsListNP TNP = new TestWeightsListNP(LT.getData(),testData,MNP, ngrams,learn,preprocessing);
+            System.out.println(TNP.testWeights());
         }
     }
-
-
-
-
 }

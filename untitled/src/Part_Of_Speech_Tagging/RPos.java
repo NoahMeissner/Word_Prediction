@@ -22,10 +22,10 @@ public class RPos {
     private final Script S;
 
 
-    public RPos(Script S)
+    public RPos(Script S, boolean preprocessing)
     {
-        Preprocessing P = new Preprocessing(S);
-        this.S = P.getS();
+        PreProcessing P = new PreProcessing(S,preprocessing);
+        this.S = P.getText();
     }
 
 

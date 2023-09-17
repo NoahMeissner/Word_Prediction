@@ -1,6 +1,8 @@
 package No_POS_Tagging.Preprocessing.Training;
-import No_POS_Tagging.Preprocessing.PreProcessing;
+
+import Part_Of_Speech_Tagging.PreProcessing;
 import lingologs.Script;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.concurrent.*;
  */
 public class TrainListNP {
     private final List<List<Script>> LS;
+    private final boolean preprocessing;
+
 
     static class TrainCallable implements Callable<HashMap<Script, HashMap<Script,Integer>>>
     {
@@ -44,9 +48,10 @@ public class TrainListNP {
     }
 
 
-    public TrainListNP(HashMap<String, List<HashMap<Script,Script>>> HS, String test)
+    public TrainListNP(HashMap<String, List<HashMap<Script,Script>>> HS, String test, boolean preprocessing)
     {
         this.LS = reduceMap(HS, test);
+        this.preprocessing = preprocessing;
     }
 
     private List<List<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS,String test)
@@ -61,7 +66,7 @@ public class TrainListNP {
                 {
                     Z.add(H.get(Script.of("text_entry")));
                 }
-                PreProcessing P = new PreProcessing(Z);
+                PreProcessing P = new PreProcessing(Z,preprocessing);
                 result.addAll(P.getListText());
             }
         }

@@ -15,16 +15,18 @@ public class TestWeightsListP {
     private final boolean ROP;
 
     private final boolean learn;
+    private final boolean preprocessing;
     private final Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C;
 
     public TestWeightsListP(boolean UOB, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
-            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean ROP, boolean learn)
+            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean ROP, boolean learn,boolean preprocessing)
     {
         this.UOB = UOB;
         this.C = C;
         this.ROP = ROP;
         this.learn = learn;
+        this.preprocessing = preprocessing;
     }
 
     public Triple<Integer,Integer,Integer> testWeights(HashMap<String, List<HashMap<Script,Script>>> HS, String testSetName)
@@ -52,8 +54,7 @@ public class TestWeightsListP {
             {
                 for(HashMap<Script,Script> H:S.get(D))
                 {
-                    Preprocessing P = new Preprocessing(H.get(Script.of("text_entry")));
-                    res.add(P.getS());
+                    res.add(H.get(Script.of("text_entry")));
                 }
             }
         }
@@ -92,12 +93,12 @@ public class TestWeightsListP {
     private List<Couple<Script, PosTags>> processList(Script ps) {
         if(ROP)
         {
-            PPos PP = new PPos(ps);
+            PPos PP = new PPos(ps,preprocessing);
             ProcessPos P = new ProcessPos(PP.getPosTags().get(0));
             return P.getCouples();
         }
         else{
-            RPos R = new RPos(ps);
+            RPos R = new RPos(ps,preprocessing);
             ProcessPos P = new ProcessPos(R.getPosTags());
             return P.getCouples();
         }

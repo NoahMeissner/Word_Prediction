@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PPos {
     /**
      * This class, `PPos`, manages Probabilistic Part-Of-Speech (POS) Tagging utilizing the NLTK Python Library.
@@ -19,17 +20,19 @@ public class PPos {
      */
 
     private final Script S;
+    private final boolean preprocessing;
 
     // Constructor
-    public PPos(Script S){
+    public PPos(Script S, boolean preprocessing){
         this.S = S;
+        this.preprocessing = preprocessing;
     }
 
     // Method to Start Pos-Tagging Process
     public List<Script> getPosTags()
     {
-        Preprocessing P = new Preprocessing(S);
-        return runPythonScript(P.getS());
+        PreProcessing P = new PreProcessing(S, preprocessing);
+        return runPythonScript(P.getText());
     }
 
     private final String PythonPOSTagging = """

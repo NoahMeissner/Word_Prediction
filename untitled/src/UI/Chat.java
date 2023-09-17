@@ -11,39 +11,47 @@ import java.util.*;
 
 public class Chat {
 
+    private final String exitName = "exit()";
     private final String delimiter = "#################################";
+    private final boolean preprocessing;
 
     public Chat(Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
-            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean UOB, boolean ROP)
+            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean UOB, boolean ROP, Map<Tags,String> links, boolean preprocessing)
     {
+        this.preprocessing = preprocessing;
         if(UOB)
         {
-            chatPU(C, "",ROP);
+            safeText(Script.of(chatPU(C, "",ROP)), links);
+
         }
         else {
             chatPB(C, "",ROP);
+            safeText(Script.of(chatPB(C, "",ROP)), links);
+
         }
     }
 
 
 
     public Chat(Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> MNP, boolean
-                UOB)
+                UOB, Map<Tags,String> links, boolean preprocessing)
     {
+        this.preprocessing = preprocessing;
         if(UOB)
         {
-            chatNPU(MNP.getKey(), "");
+            safeText(Script.of(chatNPU(MNP.getKey(), "")), links);
         }
         else {
-            chatNPB(MNP.getValue(), "");
+            safeText(Script.of(chatNPB(MNP.getValue(), "")), links);
+
         }
     }
 
     private String chatPB(Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> C, String S,boolean ROP) {
         List<String> LS = List.of(S.split(" "));
         Script Bigr = Script.of("");
-        if(S.contains("exit()")){
-            return S;
+        if(S.contains(exitName)){
+            return S.substring(0, S.length() - exitName.length());
         }
         else{
             System.out.println(S);
@@ -62,26 +70,26 @@ public class Chat {
         }
     }
 
-    private String chatPU(Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> C, String S, boolean ROP) {
-        List<String> LS = List.of(S.split(" "));
-        if(S.contains("exit()")){
-            return S;
+    private String chatPU(
+            Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
+                    HashMap<Script, HashMap<PosTags, Integer>>> C, String S, boolean ROP) {
+        if (S.contains(exitName)) {
+            return S.substring(0, S.length() - exitName.length());
         }
-        else{
-            System.out.println(S);
-            Script[] SUG = new Script[3];
-            System.out.println(delimiter);
-            if(LS.size()>1 && !S.equals(""))
-            {
 
-                SUG = findMaxPOS(C, S, ROP);
-                System.out.println(SUG[0]);
-            }
-            else{
-                System.out.println("Start");
-            }
-            return chatPU(C, write(S,SUG),ROP);
+        List<String> LS = List.of(S.split(" "));
+        System.out.println(S);
+        Script[] SUG = new Script[3];
+        System.out.println(delimiter);
+
+        if (LS.size() > 1 && !S.equals("")) {
+            SUG = findMaxPOS(C, S, ROP);
+            System.out.println(SUG[0]);
+        } else {
+            System.out.println("Start");
         }
+
+        return chatPU(C, write(S, SUG), ROP);
     }
 
     private Script[] findMaxPOS(
@@ -90,13 +98,13 @@ public class Chat {
         Tuple.Couple<Script, PosTags> NGram;
         if(ROP)
         {
-            PPos pPos = new PPos(Script.of(s));
+            PPos pPos = new PPos(Script.of(s),preprocessing);
             ProcessPos PR = new ProcessPos(pPos.getPosTags().get(0));
             List<Tuple.Couple<Script, PosTags>> LC = PR.getCouples();
             NGram = LC.get(LC.size()-1);
         }
         else{
-            RPos R = new RPos(Script.of(s));
+            RPos R = new RPos(Script.of(s),preprocessing);
             ProcessPos PR = new ProcessPos(R.getPosTags());
             List<Tuple.Couple<Script, PosTags>> LC = PR.getCouples();
             NGram = LC.get(LC.size()-1);
@@ -104,7 +112,7 @@ public class Chat {
 
         PosTags P = findPos(c.getValue(),NGram.getValue());
         System.out.println(P.name());
-        return findMaxSPOS(c.getKey().get(NGram.getKey()).get(P));
+        return findMaxSPOS(c.getKey().get(NGram.getKey()).get(P)); //TODO error Hashmap get(object ist null
 
     }
 
@@ -148,8 +156,8 @@ public class Chat {
     private String chatNPB(HashMap<Script, HashMap<Script, Integer>> key, String S) {
         List<String> LS = List.of(S.split(" "));
         Script Bigr;
-        if(S.contains("exit()")){
-            return S;
+        if(S.contains(exitName)){
+            return S.substring(0, S.length() - exitName.length());
         }
         else{
             System.out.println(S);
@@ -170,8 +178,8 @@ public class Chat {
 
     private String chatNPU(HashMap<Script, HashMap<Script, Integer>> key, String S) {
         List<String> LS = List.of(S.split(" "));
-        if(LS.get(LS.size()-1).equals("exit()")){
-            return S;
+        if(LS.get(LS.size()-1).equals(exitName)){
+            return S.substring(0, S.length() - exitName.length());
         }
         else{
             System.out.println(S);
@@ -274,10 +282,6 @@ public class Chat {
         }
         String A = new Scanner(System.in).nextLine();
         switch (A) {
-            case "exit()" -> {
-                safe();
-                return S;
-            }
             case "1" -> S += " " + T[0];
             case "2" -> S += " " + T[1];
             case "3" -> S += " " + T[2];
@@ -286,7 +290,16 @@ public class Chat {
         return S;
     }
 
-    private void safe(){
-        System.out.println("Safen muessen wir noch bauen");
+    private void safeText(Script S, Map<Tags, String> links){
+        String L = links.get(Tags.text);
+        System.out.println("Do you want to save your Text");
+        String A = new Scanner(System.in).nextLine();
+        if(A.equals("true"))
+        {
+            SafeConfig SC = new SafeConfig(S,L);
+        }
+        else{
+            System.out.println("System closed");
+        }
     }
 }

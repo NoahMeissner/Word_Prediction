@@ -1,6 +1,6 @@
 package No_POS_Tagging.Preprocessing.Test_weights;
 
-import No_POS_Tagging.Preprocessing.PreProcessing;
+import Part_Of_Speech_Tagging.PreProcessing;
 import lingolava.Tuple;
 import lingologs.Script;
 
@@ -18,18 +18,20 @@ public class TestWeightsListNP {
     private final boolean UOB;
 
     private final boolean learn;
+    private final boolean preprocessing;
     private final Map.Entry<
             HashMap<Script, HashMap<Script, Integer>>,
             HashMap<Script, HashMap<Script, Integer>>> Weights;
     public TestWeightsListNP(HashMap<String, List<HashMap<Script,Script>>> HS,
                              String test,
                              Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> Weights,
-                             boolean UOB, boolean learn)
+                             boolean UOB, boolean learn, boolean preprocessing)
     {
         this.HS = reduceMap(HS,test);
         this.Weights = Weights;
         this.UOB = UOB;
         this.learn = learn;
+        this.preprocessing = preprocessing;
     }
 
     private List<List<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS, String test)
@@ -44,7 +46,7 @@ public class TestWeightsListNP {
                 {
                     btw.add(H.get(Script.of("text_entry")));
                 }
-                PreProcessing P = new PreProcessing(btw);
+                PreProcessing P = new PreProcessing(btw,preprocessing);
                 result.addAll(P.getListText());
             }
         }

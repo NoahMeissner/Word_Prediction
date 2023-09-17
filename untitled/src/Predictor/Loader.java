@@ -63,16 +63,10 @@ public class Loader {
         return NPOS.getM();
     }
 
+
+
     public Map<Tags, Integer> getConfig()
     {
         return SConfig.getConfig();
     }
-
-
-
-
-
-
-
-
 }

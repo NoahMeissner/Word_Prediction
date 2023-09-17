@@ -1,6 +1,6 @@
 package Part_Of_Speech_Tagging.Test;
 
-import Part_Of_Speech_Tagging.*;
+import Part_Of_Speech_Tagging.PosTags;
 import lingolava.Tuple.Couple;
 import lingolava.Tuple.Triple;
 import lingologs.Script;
@@ -66,6 +66,7 @@ public class TestBigramWeights {
                                             System.out.println("positive");
                                             if(learn)
                                             {
+                                                // Learn
                                                 HMP.put(keyMaxPos,HMP.get(maxPos)+1);
                                                 tags.put(tagB,HMP);
                                                 HMS.put(R,HMS.get(R)+1);
@@ -91,7 +92,17 @@ public class TestBigramWeights {
                                 positive++;
                                 if(learn)
                                 {
-                                    //TODO learn noch machen
+                                    PosTags P = POSList.get(i+2).getValue();
+                                    HashMap<PosTags,Integer> HP = new HashMap<>(); // PosTags HashMap
+                                    HashMap<Script,Integer> HS = new HashMap<>(); // Inner Inner Text Hashmap
+                                    HashMap<PosTags,HashMap<Script,Integer>> HR = new HashMap<>(); // Text PosTags HashMap
+                                    // Fill Text HashMap
+                                    HS.put(S,1);
+                                    HR.put(P,HS);
+                                    text_weights.put(textB,HR);
+                                    // Fill PosTags Hashmap
+                                    HP.put(P,1);
+                                    tags.put(tagB,HP);
                                 }
 
                             }

@@ -89,7 +89,17 @@ public class TestUnigramWeights {
                                 positive++;
                                 if(learn)
                                 {
-                                    // TODO learn noch machen
+                                    PosTags P = POSList.get(i+1).getValue();
+                                    HashMap<PosTags,Integer> HP = new HashMap<>(); // PosTags HashMap
+                                    HashMap<Script,Integer> HS = new HashMap<>(); // Inner Inner Text Hashmap
+                                    HashMap<PosTags,HashMap<Script,Integer>> HR = new HashMap<>(); // Text PosTags HashMap
+                                    // Fill Text HashMap
+                                    HS.put(S,1);
+                                    HR.put(P,HS);
+                                    text_weights.put(textB,HR);
+                                    // Fill PosTags Hashmap
+                                    HP.put(P,1);
+                                    tags.put(Script.of(tagB.name()),HP);
                                 }
 
                             }

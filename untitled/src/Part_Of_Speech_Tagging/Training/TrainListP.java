@@ -17,6 +17,8 @@ public class TrainListP {
     private final List<List<Couple<Script, PosTags>>> LS;
     private final boolean UOB;
 
+    private final boolean preprocessing;
+
 
     public Couple<HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>,HashMap<Script, HashMap<PosTags, Integer>>>
     trainWeights()
@@ -46,10 +48,11 @@ public class TrainListP {
     }
 
 
-    public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS, String testWork, boolean ROP, boolean UOB)// testWork Name of work which will be tested set
+    public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS, String testWork, boolean ROP, boolean UOB, boolean preprocessing)// testWork Name of work which will be tested set
     {
         this.UOB = UOB;
         this.LS = prepareMap(HS, testWork,ROP);
+        this.preprocessing = preprocessing;
 
     }
 
@@ -101,12 +104,12 @@ public class TrainListP {
                 String text = SB.toString();
                 if(ROP)
                 {
-                    PPos P = new PPos(Script.of(text));
+                    PPos P = new PPos(Script.of(text),preprocessing);
                     ProcessPos PR = new ProcessPos(P.getPosTags().get(0));
                     LZ = PR.getCouples();
                 }
                 else{
-                    RPos R = new RPos(Script.of(text));
+                    RPos R = new RPos(Script.of(text),preprocessing);
                     ProcessPos PR = new ProcessPos(R.getPosTags());
                     LZ =  PR.getCouples();
                 }
