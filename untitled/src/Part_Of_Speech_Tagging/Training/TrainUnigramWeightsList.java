@@ -19,12 +19,14 @@ public class TrainUnigramWeightsList {
 
     public TrainUnigramWeightsList(List<List<Couple<Script, PosTags>>> LS)
     {
+        System.out.println(LS);
         this.LS = LS;
     }
 
 
     public HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> getWeights()
     {
+        System.out.println("Konstruktor get Weights");
         return setWeights(LS);
     }
 

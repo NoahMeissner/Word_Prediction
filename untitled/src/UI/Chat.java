@@ -4,7 +4,7 @@ import Part_Of_Speech_Tagging.PPos;
 import Part_Of_Speech_Tagging.PosTags;
 import Part_Of_Speech_Tagging.ProcessPos;
 import Part_Of_Speech_Tagging.RPos;
-import lingolava.Tuple;
+import lingolava.Tuple.Couple;
 import lingologs.Script;
 
 import java.util.*;
@@ -14,11 +14,14 @@ public class Chat {
     private final String exitName = "exit()";
     private final String delimiter = "#################################";
     private final boolean preprocessing;
+    private final boolean UOB;
 
-    public Chat(Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
-            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean UOB, boolean ROP, Map<Tags,String> links, boolean preprocessing)
+    public Chat(Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
+            HashMap<Script, HashMap<PosTags, Integer>>> C,
+                boolean UOB, boolean ROP, Map<Tags,String> links, boolean preprocessing)
     {
         this.preprocessing = preprocessing;
+        this.UOB = UOB;
         if(UOB)
         {
             safeText(Script.of(chatPU(C, "",ROP)), links);
@@ -36,6 +39,7 @@ public class Chat {
     public Chat(Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> MNP, boolean
                 UOB, Map<Tags,String> links, boolean preprocessing)
     {
+        this.UOB = UOB;
         this.preprocessing = preprocessing;
         if(UOB)
         {
@@ -47,7 +51,7 @@ public class Chat {
         }
     }
 
-    private String chatPB(Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> C, String S,boolean ROP) {
+    private String chatPB(Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> C, String S,boolean ROP) {
         List<String> LS = List.of(S.split(" "));
         Script Bigr = Script.of("");
         if(S.contains(exitName)){
@@ -60,8 +64,8 @@ public class Chat {
             if(LS.size()>1 && !S.equals(""))
             {
                 Bigr = Script.of(LS.get(LS.size()-2)+" "+LS.get(LS.size()-1));
-                //SUG = findMaxNP(Bigr,key,new Script[3]);
-                System.out.println("(1) "+ SUG[0] + "(2) "+SUG[1] +"(3) "+SUG[2]);
+                SUG = findMaxPOS(C,Bigr,ROP);
+                System.out.println("(1) "+ SUG[0] + "(2) "+SUG[1] +"(3) "+SUG[2]+"Bigr");
             }
             else{
                 System.out.println("Start");
@@ -71,7 +75,7 @@ public class Chat {
     }
 
     private String chatPU(
-            Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
+            Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
                     HashMap<Script, HashMap<PosTags, Integer>>> C, String S, boolean ROP) {
         if (S.contains(exitName)) {
             return S.substring(0, S.length() - exitName.length());
@@ -83,8 +87,8 @@ public class Chat {
         System.out.println(delimiter);
 
         if (LS.size() > 1 && !S.equals("")) {
-            SUG = findMaxPOS(C, S, ROP);
-            System.out.println(SUG[0]);
+            Script UGR = Script.of(LS.get(LS.size()-1));
+            SUG = findMaxPOS(C, UGR, ROP);
         } else {
             System.out.println("Start");
         }
@@ -93,27 +97,43 @@ public class Chat {
     }
 
     private Script[] findMaxPOS(
-            Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> c,
-            String s, boolean ROP) {
-        Tuple.Couple<Script, PosTags> NGram;
+            Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> c,
+            Script S, boolean ROP) {
+        Couple<Script, PosTags> NGram;
+        List<Couple<Script, PosTags>> LC;
         if(ROP)
         {
-            PPos pPos = new PPos(Script.of(s),preprocessing);
+            PPos pPos = new PPos(S,preprocessing);
             ProcessPos PR = new ProcessPos(pPos.getPosTags().get(0));
-            List<Tuple.Couple<Script, PosTags>> LC = PR.getCouples();
+            LC = PR.getCouples();
             NGram = LC.get(LC.size()-1);
         }
         else{
-            RPos R = new RPos(Script.of(s),preprocessing);
+            RPos R = new RPos(Script.of(S),preprocessing);
             ProcessPos PR = new ProcessPos(R.getPosTags());
-            List<Tuple.Couple<Script, PosTags>> LC = PR.getCouples();
+            LC = PR.getCouples();
             NGram = LC.get(LC.size()-1);
+
         }
+        if(UOB)
+        {
+            PosTags P = findPos(c.getValue(),Script.of(NGram.getValue().name()));
+            if(c.getKey().get(NGram.getKey()).get(P) != null)
+            {
+                return findMaxSPOS(c.getKey().get(NGram.getKey()).get(P));//TODO error Hashmap get(object ist null
 
-        PosTags P = findPos(c.getValue(),NGram.getValue());
-        System.out.println(P.name());
-        return findMaxSPOS(c.getKey().get(NGram.getKey()).get(P)); //TODO error Hashmap get(object ist null
-
+            }
+            else{
+                // TODO was machen wir wenn das ist
+                return null;
+            }
+        }
+        else{
+            String NGRMB = LC.get(LC.size()-1).getValue().name()+ LC.get(LC.size()-1).getValue().name();
+            String textB = LC.get(LC.size()-1).getKey()+ " "+LC.get(LC.size()-1).getKey();
+            Script PTG = Script.of(findPos(c.getValue(),Script.of(NGRMB)).name());
+            return findMaxSPOS(c.getKey().get(textB).get(PTG));
+        }
     }
 
     private static Script[] findMaxSPOS(HashMap<Script, Integer> key) {
@@ -137,9 +157,8 @@ public class Chat {
         return topThreeScripts;
     }
 
-    private PosTags findPos(HashMap<Script, HashMap<PosTags, Integer>> value, PosTags value1) {
-        Script key = Script.of(value1.name());
-        HashMap<PosTags, Integer> HM = value.get(key);
+    private PosTags findPos(HashMap<Script, HashMap<PosTags, Integer>> value, Script S) {
+        HashMap<PosTags, Integer> HM = value.get(S);
         PosTags maxPosTag = null;
         int maxValue = Integer.MIN_VALUE;
 
@@ -149,7 +168,6 @@ public class Chat {
                 maxPosTag = entry.getKey();
             }
         }
-
         return maxPosTag;
     }
 
@@ -162,7 +180,6 @@ public class Chat {
         else{
             System.out.println(S);
             Script[] SUG = new Script[3];
-            System.out.println(delimiter);
             if(LS.size()>1 && !S.equals(""))
             {
                 Bigr = Script.of(LS.get(LS.size()-2)+" "+LS.get(LS.size()-1));
@@ -184,7 +201,6 @@ public class Chat {
         else{
             System.out.println(S);
             Script[] SUG = new Script[3];
-            System.out.println(delimiter);
             if(!S.equals(""))
             {
                 SUG = findMaxNP(Script.of(LS.get(LS.size()-1)),key,new Script[3]);
@@ -198,34 +214,6 @@ public class Chat {
             return chatNPU(key, write(S,SUG));
         }
     }
-
-
-
-
-    private static Script[] findMax(HashMap<Script, HashMap<Script, Integer>> V) {
-        HashMap<Script, Integer> keyCount = new HashMap<>();
-
-        for (HashMap<Script, Integer> innerMap : V.values()) {
-            for (Script script : innerMap.keySet()) {
-                keyCount.put(script, keyCount.getOrDefault(script, 0) + 1);
-            }
-        }
-
-        List<Map.Entry<Script, Integer>> entryList = new ArrayList<>(keyCount.entrySet());
-
-        entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-
-        Script[] mostFrequentKeys = new Script[3];
-
-        for (int i = 0; i < 3 && i < entryList.size(); i++) {
-            mostFrequentKeys[i] = entryList.get(i).getKey();
-        }
-
-        return mostFrequentKeys;
-    }
-
-
-
 
 
     private Script[] findMaxNP(Script S, HashMap<Script, HashMap<Script, Integer>> key, Script[] LS) {
@@ -275,10 +263,35 @@ public class Chat {
         }
     }
 
+    private static Script[] findMax(HashMap<Script, HashMap<Script, Integer>> V) {
+        HashMap<Script, Integer> keyCount = new HashMap<>();
+
+        for (HashMap<Script, Integer> innerMap : V.values()) {
+            for (Script script : innerMap.keySet()) {
+                keyCount.put(script, keyCount.getOrDefault(script, 0) + 1);
+            }
+        }
+
+        List<Map.Entry<Script, Integer>> entryList = new ArrayList<>(keyCount.entrySet());
+
+        entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        Script[] mostFrequentKeys = new Script[3];
+
+        for (int i = 0; i < 3 && i < entryList.size(); i++) {
+            mostFrequentKeys[i] = entryList.get(i).getKey();
+        }
+
+        return mostFrequentKeys;
+    }
+
     private String write (String S, Script[] T){
-        if(T[0]!= null)
+        if(T != null)
         {
             System.out.println("(1):"+ T[0] + " (2):" + T[1]+" (3):" + T[2]);
+        }
+        else{
+            System.out.println("No Predictions");
         }
         String A = new Scanner(System.in).nextLine();
         switch (A) {

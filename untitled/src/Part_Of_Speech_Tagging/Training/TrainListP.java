@@ -48,12 +48,13 @@ public class TrainListP {
     }
 
 
-    public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS, String testWork, boolean ROP, boolean UOB, boolean preprocessing)// testWork Name of work which will be tested set
+    public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS,
+                      String testWork, boolean ROP, boolean UOB, boolean preprocessing)// testWork Name of work which will be tested set
     {
         this.UOB = UOB;
         this.LS = prepareMap(HS, testWork,ROP);
         this.preprocessing = preprocessing;
-
+        System.out.println("TrainList Konstruktor");
     }
 
     private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> getWeights()

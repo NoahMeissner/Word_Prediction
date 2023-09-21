@@ -23,15 +23,15 @@ public class SafeWeightsNP {
     {
         this.M = M;
         Map.Entry<HashMap<String, HashMap<String, Integer>>, HashMap<String, HashMap<String, Integer>>> ZS = convertScriptToString(M);
-        SafeInJSON(UI,ZS.getKey());
-        SafeInJSON(BI,ZS.getValue());
+        SafeInJSON(UI,ZS.getValue());
+        SafeInJSON(BI,ZS.getKey());
     }
 
     public SafeWeightsNP()
     {
         this.M = convertStringToScript(Map.entry(
-                Objects.requireNonNull(getFromJ(UI)),
-                Objects.requireNonNull(getFromJ(BI))));
+                Objects.requireNonNull(getFromJ(BI)),
+                Objects.requireNonNull(getFromJ(UI))));
     }
 
     public Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> getM() {
