@@ -1,12 +1,12 @@
 package No_POS_Tagging.Preprocessing.Training;
 
 import Part_Of_Speech_Tagging.PreProcessing;
+import lingolava.Tuple;
 import lingologs.Script;
 import lingologs.Texture;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 
@@ -22,6 +22,12 @@ import java.util.concurrent.*;
 public class TrainListNP {
     private final Texture<Texture<Script>> LS;
     private final boolean preprocessing;
+
+    public TrainListNP(HashMap<String, List<HashMap<Script,Script>>> HS, String test, boolean preprocessing)
+    {
+        this.LS = reduceMap(HS, test);
+        this.preprocessing = preprocessing;
+    }
 
 
     static class TrainCallable implements Callable<HashMap<Script, HashMap<Script,Integer>>>
@@ -47,13 +53,6 @@ public class TrainListNP {
         }
     }
 
-
-    public TrainListNP(HashMap<String, List<HashMap<Script,Script>>> HS, String test, boolean preprocessing)
-    {
-        this.LS = reduceMap(HS, test);
-        this.preprocessing = preprocessing;
-    }
-
     private Texture<Texture<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS,String test)
     {
         Texture<Texture<Script>> result = new Texture<>();
@@ -73,22 +72,22 @@ public class TrainListNP {
         return result;
     }
 
-    private Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>>
-    multiParsing(Texture<Texture<Script>> LS) throws ExecutionException, InterruptedException
+    private Tuple.Couple<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>>
+    multiThreading(Texture<Texture<Script>> LS) throws ExecutionException, InterruptedException
     {
         TrainCallable TCU = new TrainCallable(false, LS), TCB = new TrainCallable(true, LS);
         ExecutorService ExSe = Executors.newCachedThreadPool();
         Future<HashMap<Script, HashMap<Script, Integer>>> FU = ExSe.submit(TCU), FB = ExSe.submit(TCB);
         HashMap<Script, HashMap<Script, Integer>> HU = FU.get(), HB = FB.get();
         ExSe.close();
-        return Map.entry(HU,HB);
+        return Tuple.Couple.of(HU,HB);
     }
 
-    public Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> getWeights()
+    public Tuple.Couple<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> getWeights()
     {
         try
         {
-            return multiParsing(LS);
+            return multiThreading(LS);
         }
         catch (Exception E)
         { System.out.println(E.getMessage()); }
