@@ -3,9 +3,9 @@ package Part_Of_Speech_Tagging.Training;
 import Part_Of_Speech_Tagging.PosTags;
 import lingolava.Tuple.Couple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * The TrainUnigramWeightsList class is responsible for training unigram weights and generating tag relationships
@@ -15,9 +15,9 @@ import java.util.List;
 
 public class TrainUnigramWeightsList {
 
-    private final List<List<Couple<Script, PosTags>>> LS;
+    private final Texture<Texture<Couple<Script, PosTags>>> LS;
 
-    public TrainUnigramWeightsList(List<List<Couple<Script, PosTags>>> LS)
+    public TrainUnigramWeightsList(Texture<Texture<Couple<Script, PosTags>>> LS)
     {
         System.out.println(LS);
         this.LS = LS;
@@ -35,20 +35,20 @@ public class TrainUnigramWeightsList {
         return setTags(LS);
     }
 
-    private HashMap<Script, HashMap<PosTags, Integer>> setTags(List<List<Couple<Script, PosTags>>> LA) {
+    private HashMap<Script, HashMap<PosTags, Integer>> setTags(Texture<Texture<Couple<Script, PosTags>>> LA) {
         HashMap<Script, HashMap<PosTags, Integer>> res = new HashMap<>();
 
-        for(List<Couple<Script, PosTags>> L : LA)
+        for(Texture<Couple<Script, PosTags>> L : LA)
         {
-            for(int i = 0; i<L.size();i++)
+            for(int i = 0; i<L.toList().size();i++)
             {
-                PosTags currentP = L.get(i).getValue();
+                PosTags currentP = L.at(i).getValue();
 
                 if(res.get(currentP)!= null)
                 {
-                    if(i+1<L.size()){
+                    if(i+1<L.toList().size()){
                         HashMap<PosTags,Integer> HP = res.get(currentP);
-                        PosTags nextP = L.get(i+1).getValue();
+                        PosTags nextP = L.at(i+1).getValue();
                         int number = 1;
                         if(HP.get(nextP)!=null)
                         {
@@ -59,10 +59,10 @@ public class TrainUnigramWeightsList {
                     }
                 }
                 else{
-                    if(i+1<L.size())
+                    if(i+1<L.toList().size())
                     {
                         HashMap<PosTags,Integer> HP = new HashMap<>();
-                        PosTags nextP = L.get(i+1).getValue();
+                        PosTags nextP = L.at(i+1).getValue();
                         HP.put(nextP,1); // one because first time
                         res.put(Script.of(currentP.name()),HP);
                     }
@@ -72,19 +72,19 @@ public class TrainUnigramWeightsList {
         return res;
     }
 
-    private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>  setWeights(List<List<Couple<Script, PosTags>>> LA) {
+    private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>  setWeights(Texture<Texture<Couple<Script, PosTags>>> LA) {
         HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> res = new HashMap<>();
 
-        for(List<Couple<Script, PosTags>> L : LA)
+        for(Texture<Couple<Script, PosTags>> L : LA)
         {
-            for(int i = 0; i< L.size();i++)
+            for(int i = 0; i< L.toList().size();i++)
             {
-                Script currentS = L.get(i).getKey();
+                Script currentS = L.at(i).getKey();
 
-                if(i+1<L.size())
+                if(i+1<L.toList().size())
                 {
-                    PosTags nextP = L.get(i+1).getValue();
-                    Script nextS = L.get(i+1).getKey();
+                    PosTags nextP = L.at(i+1).getValue();
+                    Script nextS = L.at(i+1).getKey();
 
                     if(res.get(currentS) != null){
                         HashMap<PosTags,HashMap<Script,Integer>> HP = res.get(currentS);

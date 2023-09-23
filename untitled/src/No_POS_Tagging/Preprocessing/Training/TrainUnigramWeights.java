@@ -1,9 +1,9 @@
 package No_POS_Tagging.Preprocessing.Training;
 
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * The `TrainUnigramWeights` class is responsible for training unigram models on a collection of scripts.
@@ -12,12 +12,11 @@ import java.util.List;
  * getWeights():
  * Returns the calculated unigram weights as a hashmap of script pairs with associated frequencies.
  **/
-
 public class TrainUnigramWeights {
 
-    private final List<List<Script>> LS;
+    private final Texture<Texture<Script>> LS;
 
-    public TrainUnigramWeights(List<List<Script>> LS)
+    public TrainUnigramWeights(Texture<Texture<Script>> LS)
     {
         this.LS = LS;
     }
@@ -28,39 +27,39 @@ public class TrainUnigramWeights {
         return setWeights(LS);
     }
 
-    private HashMap<Script, HashMap<Script,Integer>> setWeights(List<List<Script>> Ls){
+    private HashMap<Script, HashMap<Script,Integer>> setWeights(Texture<Texture<Script>> Ls){
         HashMap<Script, HashMap<Script,Integer>> HM = new HashMap<>();
 
-        for(List<Script> L : Ls)
+        for(Texture<Script> L : Ls)
         {
-            for(int i = 0; i< L.size();i++)
+            for(int i = 0; i< L.toList().size();i++)
             {
-                if(i+1<L.size())
+                if(i+1<L.toList().size())
                 {
-                    if(HM.get(L.get(i))!= null)
+                    if(HM.get(L.at(i))!= null)
                     {
-                        HashMap<Script,Integer> HA = HM.get(L.get(i));
-                        if(HA.get(L.get(i+1))!= null && i+1 <L.size())
+                        HashMap<Script,Integer> HA = HM.get(L.at(i));
+                        if(HA.get(L.at(i+1))!= null && i+1 <L.toList().size())
                         {
-                            int v = HA.get(L.get(i+1))+1;
-                            HA.put(L.get(i+1),v);
-                            HM.put(L.get(i),HA);
+                            int v = HA.get(L.at(i+1))+1;
+                            HA.put(L.at(i+1),v);
+                            HM.put(L.at(i),HA);
                         }
                         else{
-                            if(i+1<L.size())
+                            if(i+1<L.toList().size())
                             {
-                                HA.put(L.get(i+1),1);
-                                HM.put(L.get(i),HA);
+                                HA.put(L.at(i+1),1);
+                                HM.put(L.at(i),HA);
                             }
                         }
                     }
                     else{
-                        if(HM.get(L.get(i))== null)
+                        if(HM.get(L.at(i))== null)
                         {
-                            HM.put(L.get(i), new HashMap<>());
-                            HashMap<Script,Integer> HC = HM.get(L.get(i));
-                            HC.put(L.get(i+1),1);
-                            HM.put(L.get(i),HC);
+                            HM.put(L.at(i), new HashMap<>());
+                            HashMap<Script,Integer> HC = HM.get(L.at(i));
+                            HC.put(L.at(i+1),1);
+                            HM.put(L.at(i),HC);
                         }
                     }
                 }

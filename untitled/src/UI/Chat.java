@@ -6,6 +6,7 @@ import Part_Of_Speech_Tagging.ProcessPos;
 import Part_Of_Speech_Tagging.RPos;
 import lingolava.Tuple.Couple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.*;
 
@@ -100,19 +101,19 @@ public class Chat {
             Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> c,
             Script S, boolean ROP) {
         Couple<Script, PosTags> NGram;
-        List<Couple<Script, PosTags>> LC;
+        Texture<Couple<Script, PosTags>> LC;
         if(ROP)
         {
             PPos pPos = new PPos(S,preprocessing);
             ProcessPos PR = new ProcessPos(pPos.getPosTags().get(0));
             LC = PR.getCouples();
-            NGram = LC.get(LC.size()-1);
+            NGram = LC.at(LC.toList().size()-1);
         }
         else{
             RPos R = new RPos(Script.of(S),preprocessing);
             ProcessPos PR = new ProcessPos(R.getPosTags());
             LC = PR.getCouples();
-            NGram = LC.get(LC.size()-1);
+            NGram = LC.at(LC.toList().size()-1);
 
         }
         if(UOB)
@@ -129,8 +130,8 @@ public class Chat {
             }
         }
         else{
-            String NGRMB = LC.get(LC.size()-1).getValue().name()+ LC.get(LC.size()-1).getValue().name();
-            String textB = LC.get(LC.size()-1).getKey()+ " "+LC.get(LC.size()-1).getKey();
+            String NGRMB = LC.at(LC.toList().size()-1).getValue().name()+ LC.at(LC.toList().size()-1).getValue().name();
+            String textB = LC.at(LC.toList().size()-1).getKey()+ " "+LC.at(LC.toList().size()-1).getKey();
             Script PTG = Script.of(findPos(c.getValue(),Script.of(NGRMB)).name());
             return findMaxSPOS(c.getKey().get(textB).get(PTG));
         }

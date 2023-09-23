@@ -6,6 +6,7 @@ import Part_Of_Speech_Tagging.ProcessPos;
 import Part_Of_Speech_Tagging.RPos;
 import lingolava.Tuple.Couple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.concurrent.*;
 
 public class TrainListP {
 
-    private final List<List<Couple<Script, PosTags>>> LS;
+    private final Texture<Texture<Couple<Script, PosTags>>> LS;
     private final boolean UOB;
 
     private final boolean preprocessing;
@@ -54,7 +55,6 @@ public class TrainListP {
         this.UOB = UOB;
         this.LS = prepareMap(HS, testWork,ROP);
         this.preprocessing = preprocessing;
-        System.out.println("TrainList Konstruktor");
     }
 
     private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> getWeights()
@@ -86,10 +86,10 @@ public class TrainListP {
 
 
 
-    private List<List<Couple<Script, PosTags>>>
+    private Texture<Texture<Couple<Script, PosTags>>>
     prepareMap(HashMap<String, List<HashMap<Script, Script>>> HS, String testWork,boolean ROP)
     {
-        List<List<Couple<Script, PosTags>>> result = new ArrayList<>();
+        Texture<Texture<Couple<Script, PosTags>>> result = new Texture<>();
 
         for(String D : HS.keySet())
         {
@@ -97,7 +97,7 @@ public class TrainListP {
             {
                 StringBuilder SB = new StringBuilder();
 
-                List<Couple<Script,PosTags>> LZ;
+                Texture<Couple<Script, PosTags>> LZ;
                 for(HashMap<Script,Script> H:HS.get(D))
                 {
                     SB.append(H.get(Script.of("text_entry")));
@@ -114,7 +114,7 @@ public class TrainListP {
                     ProcessPos PR = new ProcessPos(R.getPosTags());
                     LZ =  PR.getCouples();
                 }
-                result.add(LZ);
+                result = result.add(LZ);
             }
         }
 

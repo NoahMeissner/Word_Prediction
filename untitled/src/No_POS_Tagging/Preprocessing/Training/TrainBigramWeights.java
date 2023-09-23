@@ -1,8 +1,9 @@
 package No_POS_Tagging.Preprocessing.Training;
+
 import lingologs.Script;
-import java.util.ArrayList;
+import lingologs.Texture;
+
 import java.util.HashMap;
-import java.util.List;
 
 
 /**
@@ -16,23 +17,23 @@ import java.util.List;
 
 
 public class TrainBigramWeights {
-    private final List<List<Script>> LS;
+    private final Texture<Texture<Script>> LS;
 
     // Constructor
-    public TrainBigramWeights(List<List<Script>> LS)
+    public TrainBigramWeights(Texture<Texture<Script>> LS)
     {
         this.LS = LS;
     }
 
     // This method makes Bigram
-    private List<Script> makeBigram(List<Script> L)
+    private Texture<Script> makeBigram(Texture<Script> L)
     {
-        List<Script> result = new ArrayList<>();
-        for (int i = 0; i<L.size();i++)
+        Texture<Script> result = new Texture<>();
+        for (int i = 0; i<L.toList().size();i++)
         {
-            if(i+1<L.size())
+            if(i+1<L.toList().size())
             {
-                result.add(Script.of(L.get(i)+" "+L.get(i+1)));
+                result = result.add(Script.of(L.at(i)+" "+L.at(i+1)));
             }
         }
         return result;
@@ -48,42 +49,42 @@ public class TrainBigramWeights {
      * in a collection of script lists. It generates a hashmap where the keys are individual scripts, and the
      * values are hashmaps containing other scripts as keys and their corresponding frequency as values.
      */
-    private HashMap<Script, HashMap<Script,Integer>> setWeights(List<List<Script>> LS)
+    private HashMap<Script, HashMap<Script,Integer>> setWeights(Texture<Texture<Script>> LS)
     {
         HashMap<Script, HashMap<Script,Integer>> HM = new HashMap<>();
-        for(List<Script> L:LS)
+        for(Texture<Script> L:LS)
         {
             L = makeBigram(L);
-            for(int i = 0; i< L.size();i++)
+            for(int i = 0; i< L.toList().size();i++)
             {
-                if(i+1<L.size())
+                if(i+1<L.toList().size())
                 {
-                    if(HM.get(L.get(i))!= null)
+                    if(HM.get(L.at(i))!= null)
                     {
-                        Script res = L.get(i+1).split(" ").get(1);
-                        HashMap<Script,Integer> HT = HM.get(L.get(i));
-                        if(HT.get(res)!= null && i+1 <L.size())
+                        Script res = L.at(i+1).split(" ").get(1);
+                        HashMap<Script,Integer> HT = HM.get(L.at(i));
+                        if(HT.get(res)!= null && i+1 <L.toList().size())
                         {
                             int v = HT.get(res)+1;
                             HT.put(res,v);
-                            HM.put(L.get(i),HT);
+                            HM.put(L.at(i),HT);
                         }
                         else{
-                            if(i+1<L.size())
+                            if(i+1<L.toList().size())
                             {
                                 HT.put(res,1);
-                                HM.put(L.get(i),HT);
+                                HM.put(L.at(i),HT);
                             }
                         }
                     }
                     else{
-                        if(HM.get(L.get(i))== null)
+                        if(HM.get(L.at(i))== null)
                         {
-                            Script res = L.get(i+1).split(" ").get(1);
-                            HM.put(L.get(i), new HashMap<>());
-                            HashMap<Script,Integer> HT = HM.get(L.get(i));
+                            Script res = L.at(i+1).split(" ").get(1);
+                            HM.put(L.at(i), new HashMap<>());
+                            HashMap<Script,Integer> HT = HM.get(L.at(i));
                             HT.put(res,1);
-                            HM.put(L.get(i),HT);
+                            HM.put(L.at(i),HT);
                         }
                     }
                 }

@@ -4,6 +4,7 @@ import Part_Of_Speech_Tagging.*;
 import lingolava.Tuple.Couple;
 import lingolava.Tuple.Triple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,26 +72,26 @@ public class TestWeightsListP {
             SB.append(" $ ");
         }
 
-        List<Couple<Script,PosTags>> LC = processList(Script.of(SB.toString()));
+        Texture<Couple<Script, PosTags>> LC = processList(Script.of(SB.toString()));
 
         List<List<Couple<Script,PosTags>>> res = new ArrayList<>();
         List<Couple<Script,PosTags>> ZR = new ArrayList<>();
 
-        for(int i = 0; i < LC.size();i++)
+        for(int i = 0; i < LC.toList().size();i++)
         {
-            if(LC.get(i).getKey().equals(Script.of('$')))
+            if(LC.at(i).getKey().equals(Script.of('$')))
             {
                 res.add(ZR);
                 ZR = new ArrayList<>();
             }
             else {
-                ZR.add(LC.get(i));
+                ZR.add(LC.at(i));
             }
         }
         return res;
     }
 
-    private List<Couple<Script, PosTags>> processList(Script ps) {
+    private Texture<Couple<Script, PosTags>> processList(Script ps) {
         if(ROP)
         {
             PPos PP = new PPos(ps,preprocessing);

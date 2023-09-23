@@ -104,7 +104,7 @@ public class Processor {
         {
             CP = L.getDataP();
             TestWeightsListP TP = new TestWeightsListP(ngrams,CP,howprocess,learn,preprocessing);
-            TP.testWeights(LT.getData(),testData);
+            System.out.println(TP.testWeights(LT.getData(),testData));
         }
         else{
             MNP = L.getDataNP();

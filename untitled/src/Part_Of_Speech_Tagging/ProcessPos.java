@@ -2,6 +2,7 @@ package Part_Of_Speech_Tagging;
 
 import lingolava.Tuple.Couple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ProcessPos {
         this.prob = false;
     }
 
-    public List<Couple<Script,PosTags>> getCouples()
+    public Texture<Couple<Script, PosTags>> getCouples()
     {
         if(prob){
             return processProbabilistic();
@@ -35,20 +36,20 @@ public class ProcessPos {
         }
     }
 
-    private  List<Couple<Script,PosTags>> processRuleBased()
+    private  Texture<Couple<Script, PosTags>> processRuleBased()
     {
-        List<Couple<Script,PosTags>> res = new ArrayList<>();
+        Texture<Couple<Script, PosTags>> res = new Texture<>();
         for(Couple<String,String> stringStringCouple : LC)
         {
-            res.add(new Couple<>(
+            res = res.add(new Couple<>(
                     Script.of(stringStringCouple.getKey())
                     ,getPosTag(Script.of(stringStringCouple.getValue()))));
         }
         return res;
     }
 
-    private List<Couple<Script,PosTags>> processProbabilistic() {
-        List<Couple<Script,PosTags>> res = new ArrayList<>();
+    private Texture<Couple<Script, PosTags>> processProbabilistic() {
+        Texture<Couple<Script, PosTags>> res = new Texture<>();
         Script D = S.replace("\\[","");
         D = D.replace("\\]","");
         List<String> LS = splitByComma(D.toString());
@@ -59,7 +60,7 @@ public class ProcessPos {
             {
                 token = LS.get(i).replaceAll("'| ","");
             }
-            res.add(new Couple<>(Script.of(token), getPosTag(Script.of(LS.get(i+1)))));
+            res = res.add(new Couple<>(Script.of(token), getPosTag(Script.of(LS.get(i+1)))));
 
         }
         return res;

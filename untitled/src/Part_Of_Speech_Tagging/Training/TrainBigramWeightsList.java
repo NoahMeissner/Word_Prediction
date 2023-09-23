@@ -3,9 +3,9 @@ package Part_Of_Speech_Tagging.Training;
 import Part_Of_Speech_Tagging.PosTags;
 import lingolava.Tuple.Couple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * The TrainBigramWeightsList class is responsible for training bigram weights and generating tag relationships
@@ -15,10 +15,10 @@ import java.util.List;
 
 public class TrainBigramWeightsList {
 
-    private final List<List<Couple<Script, PosTags>>> LS;
+    private final Texture<Texture<Couple<Script, PosTags>>> LS;
 
 
-    public TrainBigramWeightsList(List<List<Couple<Script, PosTags>>> LS)
+    public TrainBigramWeightsList(Texture<Texture<Couple<Script, PosTags>>> LS)
     {
         this.LS = LS;
     }
@@ -33,21 +33,21 @@ public class TrainBigramWeightsList {
         return setTags(LS);
     }
 
-    private HashMap<Script,HashMap<PosTags,Integer>> setTags(List<List<Couple<Script, PosTags>>> LA)
+    private HashMap<Script,HashMap<PosTags,Integer>> setTags(Texture<Texture<Couple<Script, PosTags>>> LA)
     {
         HashMap<Script, HashMap<PosTags, Integer>> res = new HashMap<>();
 
-        for(List<Couple<Script, PosTags>> L : LA)
+        for(Texture<Couple<Script, PosTags>> L : LA)
         {
-            for(int i = 0; i<L.size()-1;i++)
+            for(int i = 0; i<L.toList().size()-1;i++)
             {
-                Script currentP = Script.of(L.get(i).getValue().name() +" " + L.get(i+1).getValue().name());
+                Script currentP = Script.of(L.at(i).getValue().name() +" " + L.at(i+1).getValue().name());
 
                 if(res.get(currentP)!= null)
                 {
-                    if(i+2<L.size()){
+                    if(i+2<L.toList().size()){
                         HashMap<PosTags,Integer> HP = res.get(currentP);
-                        PosTags nextP = L.get(i+2).getValue();
+                        PosTags nextP = L.at(i+2).getValue();
                         int number = 1;
                         if(HP.get(nextP)!=null)
                         {
@@ -58,10 +58,10 @@ public class TrainBigramWeightsList {
                     }
                 }
                 else{
-                    if(i+2<L.size())
+                    if(i+2<L.toList().size())
                     {
                         HashMap<PosTags,Integer> HP = new HashMap<>();
-                        PosTags nextP = L.get(i+2).getValue();
+                        PosTags nextP = L.at(i+2).getValue();
                         HP.put(nextP,1); // one because first time
                         res.put(currentP,HP);
                     }
@@ -71,19 +71,19 @@ public class TrainBigramWeightsList {
         return res;
     }
 
-    private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>  setWeights(List<List<Couple<Script, PosTags>>> LA) {
+    private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>  setWeights(Texture<Texture<Couple<Script, PosTags>>> LA) {
         HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> res = new HashMap<>();
 
-        for(List<Couple<Script, PosTags>> L : LA)
+        for(Texture<Couple<Script, PosTags>> L : LA)
         {
-            for(int i = 0; i< L.size()-1;i++)
+            for(int i = 0; i< L.toList().size()-1;i++)
             {
-                Script currentS = Script.of(L.get(i).getKey() + " " + L.get(i+1).getKey());
+                Script currentS = Script.of(L.at(i).getKey() + " " + L.at(i+1).getKey());
 
-                if(i+2<L.size())
+                if(i+2<L.toList().size())
                 {
-                    PosTags nextP = L.get(i+2).getValue();
-                    Script nextS = L.get(i+2).getKey();
+                    PosTags nextP = L.at(i+2).getValue();
+                    Script nextS = L.at(i+2).getKey();
 
                     if(res.get(currentS) != null){
                         HashMap<PosTags,HashMap<Script,Integer>> HP = res.get(currentS);

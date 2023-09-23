@@ -2,8 +2,8 @@ package No_POS_Tagging.Preprocessing.Training;
 
 import Part_Of_Speech_Tagging.PreProcessing;
 import lingologs.Script;
+import lingologs.Texture;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +20,16 @@ import java.util.concurrent.*;
         * to obtain unigram and bigram model weights.
  */
 public class TrainListNP {
-    private final List<List<Script>> LS;
+    private final Texture<Texture<Script>> LS;
     private final boolean preprocessing;
 
 
     static class TrainCallable implements Callable<HashMap<Script, HashMap<Script,Integer>>>
     {
-        private final List<List<Script>> LS;
+        private final Texture<Texture<Script>> LS;
         private final boolean Bigram;
 
-        public TrainCallable(boolean Bigram, List<List<Script>> LS){
+        public TrainCallable(boolean Bigram, Texture<Texture<Script>> LS){
             this.LS = LS;
             this.Bigram = Bigram;
         }
@@ -54,27 +54,27 @@ public class TrainListNP {
         this.preprocessing = preprocessing;
     }
 
-    private List<List<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS,String test)
+    private Texture<Texture<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS,String test)
     {
-        List<List<Script>> result = new ArrayList<>();
+        Texture<Texture<Script>> result = new Texture<>();
         for(String D : HS.keySet())
         {
             if(!D.equals(test))
             {
-                List<Script> Z = new ArrayList<>();
+                Texture<Script> Z = new Texture<>();
                 for(HashMap<Script,Script> H:HS.get(D))
                 {
-                    Z.add(H.get(Script.of("text_entry")));
+                    Z = Z.add(H.get(Script.of("text_entry")));
                 }
                 PreProcessing P = new PreProcessing(Z,preprocessing);
-                result.addAll(P.getListText());
+                result = result.add(P.getListText());
             }
         }
         return result;
     }
 
     private Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>>
-    multiParsing(List<List<Script>> LS) throws ExecutionException, InterruptedException
+    multiParsing(Texture<Texture<Script>> LS) throws ExecutionException, InterruptedException
     {
         TrainCallable TCU = new TrainCallable(false, LS), TCB = new TrainCallable(true, LS);
         ExecutorService ExSe = Executors.newCachedThreadPool();

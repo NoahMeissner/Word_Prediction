@@ -3,8 +3,8 @@ package No_POS_Tagging.Preprocessing.Test_weights;
 import Part_Of_Speech_Tagging.PreProcessing;
 import lingolava.Tuple;
 import lingologs.Script;
+import lingologs.Texture;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class TestWeightsListNP {
 
 
-    private final List<List<Script>> HS;
+    private final Texture<Texture<Script>> HS;
 
     private final int simi = 1;
     private final boolean UOB;
@@ -34,20 +34,20 @@ public class TestWeightsListNP {
         this.preprocessing = preprocessing;
     }
 
-    private List<List<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS, String test)
+    private Texture<Texture<Script>> reduceMap(HashMap<String, List<HashMap<Script,Script>>> HS, String test)
     {
-        List<List<Script>> result = new ArrayList<>();
+        Texture<Texture<Script>> result = new Texture<>();
         for(String D : HS.keySet())
         {
             if(D.equals(test))
             {
-                List<Script> btw = new ArrayList<>();
+                Texture<Script> btw = new Texture<>();
                 for(HashMap<Script,Script> H:HS.get(D))
                 {
-                    btw.add(H.get(Script.of("text_entry")));
+                    btw = btw.add(H.get(Script.of("text_entry")));
                 }
                 PreProcessing P = new PreProcessing(btw,preprocessing);
-                result.addAll(P.getListText());
+                result = result.add(P.getListText());
             }
         }
         return result;

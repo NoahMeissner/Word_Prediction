@@ -2,37 +2,38 @@ package No_POS_Tagging.Preprocessing.Test_weights;
 
 import lingolava.Tuple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.*;
 
 public class TestBigramWeights {
 
     private final HashMap<Script, HashMap<Script, Integer>> HM;
-    private final List<List<Script>> testSet;
+    private final Texture<Texture<Script>> testSet;
 
     private int tr = 0; // 1
     private int fa = 0; // 0
     private int no = 0; // 2
 
     private final int simi;
-    public TestBigramWeights(HashMap<Script, HashMap<Script, Integer>> HM, List<List<Script>> testSet,int simi)
+    public TestBigramWeights(HashMap<Script, HashMap<Script, Integer>> HM, Texture<Texture<Script>> testSet,int simi)
     {
         this.HM = HM;
         this.simi = simi;
         this.testSet = makeBigrams(testSet);
     }
 
-    private List<List<Script>> makeBigrams(List<List<Script>> L)
+    private Texture<Texture<Script>> makeBigrams(Texture<Texture<Script>> L)
     {
-        List<List<Script>> result = new ArrayList<>();
-        for(List<Script> LS : L)
+        Texture<Texture<Script>> result = new Texture<>();
+        for(Texture<Script> LS : L)
         {
-            List<Script> btw = new ArrayList<>();
-            for (int i = 0; i<LS.size();i++)
+            Texture<Script> btw = new Texture<>();
+            for (int i = 0; i<LS.toList().size();i++)
             {
-                if(i+1<LS.size())
+                if(i+1<LS.toList().size())
                 {
-                    btw.add(Script.of(LS.get(i)+" "+LS.get(i+1)));
+                    btw.add(Script.of(LS.at(i)+" "+LS.at(i+1)));
                 }
             }
             result.add(btw);
@@ -45,24 +46,24 @@ public class TestBigramWeights {
         return calculate_any_value(testSet,HM,simi,learn);
     }
 
-    private Tuple.Quaple<Integer,Integer,Integer,Integer> calculate_any_value(List<List<Script>> scripts,
+    private Tuple.Quaple<Integer,Integer,Integer,Integer> calculate_any_value(Texture<Texture<Script>> scripts,
                                              HashMap<Script, HashMap<Script, Integer>> hm,
                                              int simi,
                                              boolean learn) {
         List<Integer> result = new ArrayList<>();
 
-        for(List<Script> L : scripts)
+        for(Texture<Script> L : scripts)
         {
-            for (int i = 0; i < L.size(); i++) {
-                if (hm.get(L.get(i)) != null && (i + 1) < L.size()) {
-                    HashMap<Script, Integer> H = hm.get(L.get(i));
+            for (int i = 0; i < L.toList().size(); i++) {
+                if (hm.get(L.at(i)) != null && (i + 1) < L.toList().size()) {
+                    HashMap<Script, Integer> H = hm.get(L.at(i));
                     if(H!=null)
                     {
                         List<Script> LR = getMaxValues(H, simi);
                         boolean tr = false;
                         for(int a = 0; a<LR.size();a++)
                         {
-                            Script res = L.get(i+1).split(" ").get(1);
+                            Script res = L.at(i+1).split(" ").get(1);
                             if (res.equals(LR.get(a))) {
                                 result.add(1);
                                 if(learn)
@@ -78,7 +79,7 @@ public class TestBigramWeights {
                         {
                             if(learn)
                             {
-                                Script res = L.get(i+1).split(" ").get(1);
+                                Script res = L.at(i+1).split(" ").get(1);
                                 int e = 0;
                                 if(H.get(res)!=null)
                                 {
@@ -90,7 +91,7 @@ public class TestBigramWeights {
                         }
                         if(learn)
                         {
-                            hm.put(L.get(i),H);
+                            hm.put(L.at(i),H);
                         }
 
                     }

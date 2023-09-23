@@ -36,10 +36,12 @@ public class TestBigramWeights {
         {
             for(int i = 0; i<POSList.size(); i++)
             {
+                System.out.println(i);
                 if(i+2<POSList.size())
                 {
                     Script tagB = Script.of(POSList.get(i).getValue() + " "+POSList.get(i+1).getValue());
                     Script textB = Script.of(POSList.get(i).getKey() + " "+POSList.get(i+1).getKey());
+                    System.out.println(textB);
                     if(text_weights.get(textB)!= null)
                     {
                         if(tags.get(tagB)!= null)
@@ -58,6 +60,7 @@ public class TestBigramWeights {
                                     Optional<Map.Entry<Script, Integer>> KeyMaxScript = HMS.entrySet().stream()
                                             .max(Comparator.comparingInt(Map.Entry::getValue));
                                     if (KeyMaxScript.isPresent()) {
+                                        System.out.println("5");
                                         Map.Entry<Script, Integer> MRS = KeyMaxScript.get();
                                         Script R = Script.of(MRS.getKey());
                                         if(R.equals(POSList.get(i+2).getKey()))
@@ -67,7 +70,7 @@ public class TestBigramWeights {
                                             if(learn)
                                             {
                                                 // Learn
-                                                HMP.put(keyMaxPos,HMP.get(maxPos)+1);
+                                                HMP.put(keyMaxPos,HMP.get(keyMaxPos)+1);
                                                 tags.put(tagB,HMP);
                                                 HMS.put(R,HMS.get(R)+1);
                                                 HMT.put(keyMaxPos,HMS);
@@ -113,7 +116,7 @@ public class TestBigramWeights {
                     }
                     else{
                         notFound++;
-                        System.out.println("notFound");
+                        System.out.println("notFoundBigram");
                     }
                 }
             }

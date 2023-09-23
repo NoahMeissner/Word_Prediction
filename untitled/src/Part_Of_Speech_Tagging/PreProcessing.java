@@ -1,16 +1,14 @@
 package Part_Of_Speech_Tagging;
 
 import lingologs.Script;
-
-import java.util.ArrayList;
-import java.util.List;
+import lingologs.Texture;
 
 public class PreProcessing {
 
     private Script S;
     private final boolean preprocessing;
     private final boolean POS;
-    private List<Script> LS;
+    private Texture<Script> LS;
 
     public PreProcessing(Script S, boolean preprocessing){
         this.S = S;
@@ -18,7 +16,7 @@ public class PreProcessing {
         this.POS = false;
     }
 
-    public PreProcessing(List<Script> LS, boolean preprocessing)
+    public PreProcessing(Texture<Script> LS, boolean preprocessing)
     {
         this.LS = LS;
         this.preprocessing = preprocessing;
@@ -52,14 +50,9 @@ public class PreProcessing {
         return S;
     }
 
-    private List<Script> deleteWhiteSpace(Script S) {
-        List<Script> LS = Normalise(S).split(" ");
-        for (int i = 0; i<LS.size(); i++) {
-            if(LS.get(i).equals(Script.of(" "))||LS.get(i).equals(Script.of("")))
-            {
-                LS.remove(LS.get(i));
-            }
-        }
+    private Texture<Script> deleteWhiteSpace(Script S) {
+        Texture<Script> LS = new Texture<>(Normalise(S).split(" "));
+        LS.filter(A -> !A.equals(Script.of(" ")) ||!A.equals(Script.of("")) );
         return LS;
     }
 
@@ -67,17 +60,16 @@ public class PreProcessing {
         return Normalise(S);
     }
 
-    public List<List<Script>> getListText()
+    public Texture<Texture<Script>> getListText()
     {
-        List<List<Script>> result= new ArrayList<>();
+        Texture<Texture<Script>> result= new Texture<>();
 
         for (Script l : LS) {
-            if(deleteWhiteSpace(l).size()>1)
+            if(deleteWhiteSpace(l).toList().size()>1)
             {
-                result.add(deleteWhiteSpace(l));
+                result = result.add(deleteWhiteSpace(l));
             }
         }
-        System.out.println("res"+result.size());
         return result;
     }
 }

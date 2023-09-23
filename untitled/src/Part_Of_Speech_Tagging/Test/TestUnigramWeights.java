@@ -40,9 +40,9 @@ public class TestUnigramWeights {
                     Script textB = POSList.get(i).getKey();
                     if(text_weights.get(textB)!= null)
                     {
-                        if(tags.get(tagB)!= null)
+                        if(tags.get(Script.of(tagB.name()))!= null) // TODO name geändert
                         {
-                            HashMap<PosTags, Integer> HMP = tags.get(tagB);
+                            HashMap<PosTags, Integer> HMP = tags.get(Script.of(tagB.name()));
                             Optional<Map.Entry<PosTags, Integer>> entryWithMaxPos = HMP.entrySet().stream()
                                     .max(Comparator.comparingInt(Map.Entry::getValue));
                             if (entryWithMaxPos.isPresent())
@@ -61,10 +61,9 @@ public class TestUnigramWeights {
                                         if(R.equals(POSList.get(i+1).getKey()))
                                         {
                                             positive++;
-                                            System.out.println("positive");
                                             if(learn)
                                             {
-                                                HMP.put(keyMaxPos,HMP.get(maxPos)+1);
+                                                HMP.put(keyMaxPos,HMP.get(keyMaxPos)+1);
                                                 tags.put(Script.of(tagB.name()),HMP);
                                                 HMS.put(R,HMS.get(R)+1);
                                                 HMT.put(keyMaxPos,HMS);
@@ -73,9 +72,6 @@ public class TestUnigramWeights {
                                         }
                                         else {
                                             negative++;
-
-                                            System.out.println("negative"+R+":"+POSList.get(i+1));
-
                                         }
                                     }
                                 }
@@ -110,7 +106,6 @@ public class TestUnigramWeights {
                     }
                     else{
                         notFound++;
-                        System.out.println("notFound");
                     }
                 }
             }

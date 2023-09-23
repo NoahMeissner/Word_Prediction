@@ -2,16 +2,17 @@ package No_POS_Tagging.Preprocessing.Test_weights;
 
 import lingolava.Tuple;
 import lingologs.Script;
+import lingologs.Texture;
 
 import java.util.*;
 
 public class TestUnigramWeights {
 
     private HashMap<Script, HashMap<Script, Integer>> HM;
-    private final List<List<Script>> testSet;
+    private final Texture<Texture<Script>> testSet;
 
     private final int simi;
-    public TestUnigramWeights(HashMap<Script, HashMap<Script, Integer>> HM, List<List<Script>> testSet,int simi)
+    public TestUnigramWeights(HashMap<Script, HashMap<Script, Integer>> HM, Texture<Texture<Script>> testSet,int simi)
     {
         this.HM = HM;
         this.simi = simi;
@@ -23,28 +24,28 @@ public class TestUnigramWeights {
         return calculate_any_value(testSet,HM,learn);
     }
 
-    private Tuple.Quaple<Integer,Integer,Integer,Integer> calculate_any_value(List<List<Script>> scripts,
+    private Tuple.Quaple<Integer,Integer,Integer,Integer> calculate_any_value(Texture<Texture<Script>> scripts,
                                              HashMap<Script, HashMap<Script,Integer>> hm,
                                              boolean learn) {
         List<Integer> result = new ArrayList<>();
 
-        for(List<Script> L : scripts)
+        for(Texture<Script> L : scripts)
         {
-            for (int i = 0; i < L.size(); i++) {
-                if (hm.get(L.get(i)) != null && (i + 1) < L.size()) {
-                    HashMap<Script, Integer> H = hm.get(L.get(i));
+            for (int i = 0; i < L.toList().size(); i++) {
+                if (hm.get(L.at(i)) != null && (i + 1) < L.toList().size()) {
+                    HashMap<Script, Integer> H = hm.get(L.at(i));
                     boolean t = false;
                     if(H!=null)
                     {
                         List<Script> LR = getMaxValues(H, simi);
                         for(int a = 0; a<LR.size();a++)
                         {
-                            if (L.get(i + 1).equals(LR.get(a))) {
+                            if (L.at(i + 1).equals(LR.get(a))) {
                                 result.add(1);
                                 if(learn)
                                 {
-                                    int e = H.get(L.get(i+1));
-                                    H.put(L.get(i+1),e+1);
+                                    int e = H.get(L.at(i+1));
+                                    H.put(L.at(i+1),e+1);
                                 }
                                 t = true;
                                 break;
@@ -55,18 +56,18 @@ public class TestUnigramWeights {
                             if(learn)
                             {
                                 int e = 0;
-                                if(H.get(L.get(i+1))!= null)
+                                if(H.get(L.at(i+1))!= null)
                                 {
-                                    e = H.get(L.get(i+1));
+                                    e = H.get(L.at(i+1));
                                 }
-                                H.put(L.get(i+1),e+1);
+                                H.put(L.at(i+1),e+1);
                             }
 
                             result.add(0);
                         }
                         if(learn)
                         {
-                            hm.put(L.get(i),H);
+                            hm.put(L.at(i),H);
                         }
                     }
                     else{
