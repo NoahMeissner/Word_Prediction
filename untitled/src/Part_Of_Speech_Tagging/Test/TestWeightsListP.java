@@ -1,14 +1,23 @@
 package Part_Of_Speech_Tagging.Test;
 
-import Part_Of_Speech_Tagging.*;
+import No_POS_Tagging.Preprocessing.SafeWeightsNP;
+import Part_Of_Speech_Tagging.PPos;
+import Part_Of_Speech_Tagging.PosTags;
+import Part_Of_Speech_Tagging.ProcessPos;
+import Part_Of_Speech_Tagging.RPos;
+import lingolava.Tuple;
 import lingolava.Tuple.Couple;
-import lingolava.Tuple.Triple;
 import lingologs.Script;
 import lingologs.Texture;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+/**
+ * The TestWeightsListP class is responsible for evaluating the performance of a part-of-speech (POS) tagging system by
+ * testing the weights used for tagging. It allows for testing both unigram (UOB) and bigram (ROB) approaches using
+ * given training data.
+ */
 
 public class TestWeightsListP {
 
@@ -30,12 +39,16 @@ public class TestWeightsListP {
         this.preprocessing = preprocessing;
     }
 
-    public Triple<Integer,Integer,Integer> testWeights(HashMap<String, List<HashMap<Script,Script>>> HS, String testSetName)
+    public Tuple.Quaple<Integer,Integer,Integer,Integer> testWeights(HashMap<String, List<HashMap<Script,Script>>> HS, String testSetName)
     {
-        List<Script> testSet = getTestSet(HS,testSetName);
+        Texture<Script> testSet = getTestSet(HS,testSetName);
 
         if(UOB)
         {
+            SafeWeightsNP S = new SafeWeightsNP();
+
+            //TestCombination T = new TestCombination(UOB,C,learn,makeNgrams(testSet),S.getM().getKey());
+            //return T.testSystem();
             TestUnigramWeights T = new TestUnigramWeights(makeNgrams(testSet),learn,C);
             return T.testWeights();
         }
@@ -47,60 +60,37 @@ public class TestWeightsListP {
         }
     }
 
-    private List<Script> getTestSet(HashMap<String, List<HashMap<Script, Script>>> S, String testSetName) {
-        List<Script> res = new ArrayList<>();
+    private Texture<Script> getTestSet(HashMap<String, List<HashMap<Script, Script>>> S, String testSetName) {
+        Texture<Script> res = new Texture<>();
         for(String D : S.keySet())
         {
             if(D.equals(testSetName))
             {
                 for(HashMap<Script,Script> H:S.get(D))
                 {
-                    res.add(H.get(Script.of("text_entry")));
+                    res = res.add(H.get(Script.of("text_entry")));
                 }
             }
         }
         return res;
     }
 
-    private List<List<Couple<Script,PosTags>>> makeNgrams(List<Script> L)
+    private Texture<Texture<Couple<Script,PosTags>>> makeNgrams(Texture<Script> L)
 
     {
-        StringBuilder SB = new StringBuilder();
-        for(Script S: L)
-        {
-            SB.append(S);
-            SB.append(" $ ");
-        }
-
-        Texture<Couple<Script, PosTags>> LC = processList(Script.of(SB.toString()));
-
-        List<List<Couple<Script,PosTags>>> res = new ArrayList<>();
-        List<Couple<Script,PosTags>> ZR = new ArrayList<>();
-
-        for(int i = 0; i < LC.toList().size();i++)
-        {
-            if(LC.at(i).getKey().equals(Script.of('$')))
-            {
-                res.add(ZR);
-                ZR = new ArrayList<>();
-            }
-            else {
-                ZR.add(LC.at(i));
-            }
-        }
-        return res;
+        return processList(L);
     }
 
-    private Texture<Couple<Script, PosTags>> processList(Script ps) {
+    private Texture<Texture<Couple<Script, PosTags>>>processList(Texture<Script> ps) {
         if(ROP)
         {
             PPos PP = new PPos(ps,preprocessing);
-            ProcessPos P = new ProcessPos(PP.getPosTags().get(0));
+            ProcessPos P = new ProcessPos(PP.getPosTags(),ROP);
             return P.getCouples();
         }
         else{
             RPos R = new RPos(ps,preprocessing);
-            ProcessPos P = new ProcessPos(R.getPosTags());
+            ProcessPos P = new ProcessPos(ROP,R.getPosTags());
             return P.getCouples();
         }
     }

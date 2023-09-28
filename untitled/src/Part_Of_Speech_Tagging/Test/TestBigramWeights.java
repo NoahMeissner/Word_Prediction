@@ -1,21 +1,31 @@
 package Part_Of_Speech_Tagging.Test;
 
 import Part_Of_Speech_Tagging.PosTags;
+import lingolava.Tuple;
 import lingolava.Tuple.Couple;
-import lingolava.Tuple.Triple;
 import lingologs.Script;
+import lingologs.Texture;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
+/**
+ * Key Functionalities:
+ * - Testing Bigram Weights: Evaluates the performance of a POS tagging system using bigram-based weights on a provided test set.
+ * - Learning: Optionally updates the weights during testing if the 'learn' parameter is set to true.
+ * - Evaluation Metrics: Computes metrics including true positives, false positives, not found tags, and correctly tagged positions.
+ */
 public class TestBigramWeights {
 
-    private final List<List<Couple<Script,PosTags>>> LS;
+    private final Texture<Texture<Couple<Script,PosTags>>> LS;
     private final Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C;
 
     private final boolean learn;
 
-    public TestBigramWeights(List<List<Couple<Script,PosTags>>> LS,boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    public TestBigramWeights(Texture<Texture<Couple<Script,PosTags>>> LS, boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C )
     {
         this.learn = learn;
@@ -24,24 +34,22 @@ public class TestBigramWeights {
     }
 
 
-    public Triple<Integer,Integer,Integer> testWeights()
+    public Tuple.Quaple<Integer,Integer,Integer,Integer> testWeights()
     {
-        int positive = 0, negative = 0, notFound = 0;
+        int positive = 0, negative = 0, notFound = 0, posright = 0;
         HashMap<Script, HashMap<PosTags, Integer>> tags = C.getValue();
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> text_weights = C.getKey();
-        List<List<Couple<Script,PosTags>>> L = LS;
-        System.out.println(L);
+        Texture<Texture<Couple<Script,PosTags>>> L = LS;
 
-        for(List<Couple<Script,PosTags>> POSList: L)
+        for(Texture<Couple<Script,PosTags>> POSList: L)
         {
-            for(int i = 0; i<POSList.size(); i++)
+            for(int i = 0; i<POSList.toList().size(); i++)
             {
-                System.out.println(i);
-                if(i+2<POSList.size())
+                if(i+2<POSList.toList().size())
                 {
-                    Script tagB = Script.of(POSList.get(i).getValue() + " "+POSList.get(i+1).getValue());
-                    Script textB = Script.of(POSList.get(i).getKey() + " "+POSList.get(i+1).getKey());
-                    System.out.println(textB);
+                    Script tagB = Script.of(POSList.at(i).getValue() + " "+POSList.at(i+1).getValue());
+                    Script textB = Script.of(POSList.at(i).getKey() + " "+POSList.at(i+1).getKey());
+
                     if(text_weights.get(textB)!= null)
                     {
                         if(tags.get(tagB)!= null)
@@ -56,17 +64,20 @@ public class TestBigramWeights {
                                 HashMap<PosTags, HashMap<Script,Integer>> HMT = text_weights.get(textB);
                                 if(HMT.get(keyMaxPos)!= null)
                                 {
+                                    if(keyMaxPos.equals(tagB)){
+                                        posright++;
+                                    }
                                     HashMap<Script,Integer> HMS = HMT.get(keyMaxPos);
                                     Optional<Map.Entry<Script, Integer>> KeyMaxScript = HMS.entrySet().stream()
                                             .max(Comparator.comparingInt(Map.Entry::getValue));
                                     if (KeyMaxScript.isPresent()) {
-                                        System.out.println("5");
+
                                         Map.Entry<Script, Integer> MRS = KeyMaxScript.get();
                                         Script R = Script.of(MRS.getKey());
-                                        if(R.equals(POSList.get(i+2).getKey()))
+                                        if(R.equals(POSList.at(i+2).getKey()))
                                         {
                                             positive++;
-                                            System.out.println("positive");
+
                                             if(learn)
                                             {
                                                 // Learn
@@ -80,8 +91,6 @@ public class TestBigramWeights {
                                         else {
                                             negative++;
 
-                                            System.out.println("negative"+R+":"+POSList.get(i+2));
-
                                         }
                                     }
                                 }
@@ -90,12 +99,12 @@ public class TestBigramWeights {
                         else{
                             HashMap<PosTags, HashMap<Script,Integer>> HM = text_weights.get(textB);
                             Script S = findScriptWithMaxValue(HM);
-                            if(POSList.get(i+2).getKey().equals(S))
+                            if(POSList.at(i+2).getKey().equals(S))
                             {
                                 positive++;
                                 if(learn)
                                 {
-                                    PosTags P = POSList.get(i+2).getValue();
+                                    PosTags P = POSList.at(i+2).getValue();
                                     HashMap<PosTags,Integer> HP = new HashMap<>(); // PosTags HashMap
                                     HashMap<Script,Integer> HS = new HashMap<>(); // Inner Inner Text Hashmap
                                     HashMap<PosTags,HashMap<Script,Integer>> HR = new HashMap<>(); // Text PosTags HashMap
@@ -116,12 +125,11 @@ public class TestBigramWeights {
                     }
                     else{
                         notFound++;
-                        System.out.println("notFoundBigram");
                     }
                 }
             }
         }
-        return new Triple<>(positive,negative,notFound);
+        return new Tuple.Quaple<>(positive,negative,notFound,posright);
     }
 
     private Script findScriptWithMaxValue(HashMap<PosTags, HashMap<Script, Integer>> dataMap) {

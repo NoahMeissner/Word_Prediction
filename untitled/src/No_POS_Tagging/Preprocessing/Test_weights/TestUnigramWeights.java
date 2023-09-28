@@ -6,6 +6,13 @@ import lingologs.Texture;
 
 import java.util.*;
 
+/*
+ * Key Functionalities:
+ * - Testing Unigram Weights: Evaluates the performance of the system using Unigram-based weights on a provided test set.
+ * - Learning: Optionally updates the weights during testing if the 'learn' parameter is set to true.
+ * - Evaluation Metrics: Computes metrics;
+ */
+
 public class TestUnigramWeights {
 
     private HashMap<Script, HashMap<Script, Integer>> HM;

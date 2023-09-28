@@ -21,6 +21,16 @@ public class TrainListP {
     private final boolean preprocessing;
 
 
+    public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS,
+                      String testWork, boolean ROP, boolean UOB, boolean preprocessing)// testWork Name of work which will be tested set
+    {
+        System.out.println("TrainListP");
+        this.UOB = UOB;
+        this.LS = prepareMap(HS, testWork,ROP);
+        System.out.println(LS);
+        this.preprocessing = preprocessing;
+    }
+
     public Couple<HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>>,HashMap<Script, HashMap<PosTags, Integer>>>
     trainWeights()
     {
@@ -46,15 +56,6 @@ public class TrainListP {
             e.printStackTrace();
         }
         return res;
-    }
-
-
-    public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS,
-                      String testWork, boolean ROP, boolean UOB, boolean preprocessing)// testWork Name of work which will be tested set
-    {
-        this.UOB = UOB;
-        this.LS = prepareMap(HS, testWork,ROP);
-        this.preprocessing = preprocessing;
     }
 
     private HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> getWeights()
@@ -90,34 +91,32 @@ public class TrainListP {
     prepareMap(HashMap<String, List<HashMap<Script, Script>>> HS, String testWork,boolean ROP)
     {
         Texture<Texture<Couple<Script, PosTags>>> result = new Texture<>();
-
         for(String D : HS.keySet())
         {
             if(!D.equals(testWork))
             {
-                StringBuilder SB = new StringBuilder();
+                Texture<Script> SB = new Texture<>();
 
-                Texture<Couple<Script, PosTags>> LZ;
+                Texture<Texture<Couple<Script, PosTags>>> LZ;
                 for(HashMap<Script,Script> H:HS.get(D))
                 {
-                    SB.append(H.get(Script.of("text_entry")));
+                    SB = SB.add(H.get(Script.of("text_entry")));
                 }
-                String text = SB.toString();
                 if(ROP)
                 {
-                    PPos P = new PPos(Script.of(text),preprocessing);
-                    ProcessPos PR = new ProcessPos(P.getPosTags().get(0));
+                    PPos P = new PPos(SB,preprocessing);
+                    ProcessPos PR = new ProcessPos(P.getPosTags(),ROP);
                     LZ = PR.getCouples();
                 }
                 else{
-                    RPos R = new RPos(Script.of(text),preprocessing);
-                    ProcessPos PR = new ProcessPos(R.getPosTags());
+                    RPos R = new RPos(SB,preprocessing);
+                    ProcessPos PR = new ProcessPos(ROP,R.getPosTags());
                     LZ =  PR.getCouples();
                 }
                 result = result.add(LZ);
+                LZ = new Texture<>();
             }
         }
-
         return result;
     }
 }

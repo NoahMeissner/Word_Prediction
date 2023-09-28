@@ -13,13 +13,19 @@ import lingologs.Script;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The Processor class serves as the central component of the project, responsible for
+ * managing configuration settings, orchestrating the training and testing processes,
+ * and setting up the chat interface. It plays a pivotal role in controlling the flow
+ * of the project's core functionality.
+
+ * The Processor class is constructed with configuration parameters and links that dictate
+ * how the project should operate. It initializes and manages key components such as training,
+ * testing, and chat setup, ensuring a seamless execution of the project's objectives.
+ */
 public class Processor {
 
-    /*
-    Diese Klasse erhält die Config und die Links und startet das richtige Learning, was in
-     verschiedenen Punkten wichtig ist.
-     Danach führt es die Tests durch
-     */
+
 
     private final String testData = "Henry V";
     private final Map<Tags,Integer> config;
@@ -29,9 +35,7 @@ public class Processor {
     private boolean howprocess;
     private boolean ngrams;
     private boolean learn;
-
     private final boolean testConfig;
-
     private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> CP;
 
@@ -53,7 +57,7 @@ public class Processor {
         {
             howprocess = config.get(Tags.howprocess) == 1;
         }
-        ngrams = config.get(Tags.ngrams) == 1;
+        ngrams = config.get(Tags.ngrams) == 2;
         learn = config.get(Tags.learn) == 1;
         Loader L = new Loader(config);
     }

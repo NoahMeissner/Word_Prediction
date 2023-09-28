@@ -6,6 +6,13 @@ import lingologs.Texture;
 
 import java.util.*;
 
+/**
+ * Key Functionalities:
+ * - Testing Bigram Weights: Evaluates the performance of the system using Bigram-based weights on a provided test set.
+ * - Learning: Optionally updates the weights during testing if the 'learn' parameter is set to true.
+ * - Evaluation Metrics: Computes metrics;
+ */
+
 public class TestBigramWeights {
 
     private final HashMap<Script, HashMap<Script, Integer>> HM;

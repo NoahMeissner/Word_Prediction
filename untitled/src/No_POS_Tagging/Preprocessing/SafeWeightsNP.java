@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Key Functionalities:
+ * - JSON Serialization: Converts the safe weights to JSON format and stores them in separate files for unigrams (UI)
+ *   and bigrams (BI).
+ * - JSON Deserialization: Retrieves the safe weights from JSON files and loads them into memory.
+ * - Deletion: Allows for the deletion of previously stored safe weights.
+ */
 public class SafeWeightsNP {
 
     private final Path UI = Paths.get("untitled/src/JSON/safe_no_pos_UI.json");

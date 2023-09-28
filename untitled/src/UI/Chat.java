@@ -10,6 +10,11 @@ import lingologs.Texture;
 
 import java.util.*;
 
+/**
+ * The Chat class facilitates text-based interaction with the user, providing functionality for generating
+ * and suggesting text predictions based on the project's language model. It supports both rule-based and
+ * probabilistic approaches for generating suggestions and allows users to save generated text to files.
+ */
 public class Chat {
 
     private final String exitName = "exit()";
@@ -105,14 +110,14 @@ public class Chat {
         if(ROP)
         {
             PPos pPos = new PPos(S,preprocessing);
-            ProcessPos PR = new ProcessPos(pPos.getPosTags().get(0));
-            LC = PR.getCouples();
+            ProcessPos PR = new ProcessPos(pPos.getSentences(),ROP);
+            LC = PR.getSentence();
             NGram = LC.at(LC.toList().size()-1);
         }
         else{
-            RPos R = new RPos(Script.of(S),preprocessing);
-            ProcessPos PR = new ProcessPos(R.getPosTags());
-            LC = PR.getCouples();
+            RPos R = new RPos(S,preprocessing);
+            ProcessPos PR = new ProcessPos(ROP,R.getPosTags());
+            LC = PR.getSentence();
             NGram = LC.at(LC.toList().size()-1);
 
         }

@@ -11,12 +11,16 @@ import lingologs.Script;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class includes the following key functionalities:
+ * 1. Configuration Handling: It allows the program to load and save project configurations using the SafeConfig class.
+ * 2. Part-of-Speech Weights (POS): It enables the loading and safe retrieval of part-of-speech tagging weights
+ *    for probabilistic language modeling.
+ * 3. No Part-of-Speech Weights (NPOS): It enables the loading and safe retrieval of weights for scenarios where
+ *    part-of-speech tagging is not used.
+ */
+
 public class Loader {
-
-
-    /*
-    This class will Load and Safe the Data from the JSON File into the program
-     */
 
     private SafeWeightsP POS;
     private SafeWeightsNP NPOS;

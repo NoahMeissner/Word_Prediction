@@ -7,7 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
+/**
+ * This class provides the following key functionalities:
+ * 1. Configuration Management: It guides the user through setting up or loading project configurations.
+ * 2. Link Management: It assists the user in specifying file links for text and result storage.
+ * 3. Test System: It allows the user to choose whether to test the system.
+ * 4. Error Handling: It includes robust error handling and retry mechanisms to ensure valid input.
+ */
 public class Configuration {
 
 

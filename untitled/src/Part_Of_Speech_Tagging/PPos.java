@@ -1,38 +1,52 @@
 package Part_Of_Speech_Tagging;
 
 import lingologs.Script;
+import lingologs.Texture;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class, `PPos`, manages Probabilistic Part-Of-Speech (POS) Tagging utilizing the NLTK Python Library.
+ * POS tagging is applied to text data, assigning grammatical categories to each word in a sentence.
+ * The class provides methods to perform POS tagging on a given script and obtain the POS-tagged words.
+ * It interfaces with a Python script to achieve the tagging using NLTK's capabilities.
+ * The execution time for the tagging process is measured and displayed.
+ * INPUT: Script S
+ * Output: Texture<Script>
+ */
 
 public class PPos {
-    /**
-     * This class, `PPos`, manages Probabilistic Part-Of-Speech (POS) Tagging utilizing the NLTK Python Library.
-     * POS tagging is applied to text data, assigning grammatical categories to each word in a sentence.
-     * The class provides methods to perform POS tagging on a given script and obtain the POS-tagged words.
-     * It interfaces with a Python script to achieve the tagging using NLTK's capabilities.
-     * The execution time for the tagging process is measured and displayed.
-     * INPUT: Script S
-     * Output: List<Script>
-     */
 
-    private final Script S;
+    private Script S;
+    private Texture<Script> ST;
     private final boolean preprocessing;
 
     // Constructor
+    public PPos(Texture<Script> ST, boolean preprocessing){
+        this.ST = ST;
+        this.preprocessing = preprocessing;
+    }
+
     public PPos(Script S, boolean preprocessing){
         this.S = S;
         this.preprocessing = preprocessing;
     }
 
+    public Texture<Script> getSentences(){
+        PreProcessing preProcessing = new PreProcessing(S,preprocessing,true);
+        return new Texture<>(runPythonScript(preProcessing.getSentence()));
+    }
+
     // Method to Start Pos-Tagging Process
-    public List<Script> getPosTags()
+    public Texture<Script> getPosTags()
     {
-        PreProcessing P = new PreProcessing(S, preprocessing);
-        return runPythonScript(P.getText());
+        PreProcessing preProcessing = new PreProcessing(ST,preprocessing,true);
+
+        return new Texture<>(runPythonScript(preProcessing.getText()));
     }
 
     private final String PythonPOSTagging = """

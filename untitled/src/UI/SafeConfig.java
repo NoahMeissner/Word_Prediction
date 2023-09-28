@@ -13,6 +13,12 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The SafeConfig class is responsible for handling the safe storage and retrieval of configuration settings
+ * and text data in the project. It facilitates the management of configuration files and text files by providing
+ * methods for saving, retrieving, and converting data.
+ */
+
 public class SafeConfig {
 
     private final Path P = Paths.get("untitled/src/JSON/config.json");

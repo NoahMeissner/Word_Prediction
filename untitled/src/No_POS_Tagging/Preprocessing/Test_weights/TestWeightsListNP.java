@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * The 'TestWeightsListNP' class is responsible for testing the weights for part-of-speech tagging
+ * using either unigram or bigram models. It takes a set of test data, weights, and configuration
+ * parameters to evaluate the tagging accuracy.
+ */
 public class TestWeightsListNP {
 
 
@@ -46,7 +51,7 @@ public class TestWeightsListNP {
                 {
                     btw = btw.add(H.get(Script.of("text_entry")));
                 }
-                PreProcessing P = new PreProcessing(btw,preprocessing);
+                PreProcessing P = new PreProcessing(btw,preprocessing,false);
                 result = result.add(P.getListText());
             }
         }

@@ -22,7 +22,7 @@ public class TrainUnigramWeights {
     }
 
 
-    public HashMap<Script, HashMap<Script,Integer>> getWeights()
+    public HashMap<Script, HashMap<Script,Integer>> getResults()
     {
         return setWeights(LS);
     }

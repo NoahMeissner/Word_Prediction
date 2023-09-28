@@ -39,7 +39,7 @@ public class TrainBigramWeights {
         return result;
     }
 
-    public HashMap<Script, HashMap<Script,Integer>> getWeights()
+    public HashMap<Script, HashMap<Script,Integer>> getResults()
     {
         return setWeights(LS);
     }

@@ -12,6 +12,13 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Key Functionalities:
+ * - Loading and Safely Storing POS Tagging Weights: This class handles the reading and writing of POS tagging
+ *   weights, including both text-based weights and POS-specific weights.
+ * - Data Conversion: It includes methods for converting between different data structures, such as converting
+ *   between script-based keys and string-based keys, facilitating data storage and retrieval.
+ */
 public class SafeWeightsP {
     private final Path TW = Paths.get("untitled/src/JSON/safe_pos_Text.json");
     private final Path PW = Paths.get("untitled/src/JSON/safe_pos_POS.json");

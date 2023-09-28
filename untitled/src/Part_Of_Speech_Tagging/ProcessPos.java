@@ -7,112 +7,174 @@ import lingologs.Texture;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Key Functionalities:
+ * - Processing Text for POS Tagging: This class processes input text and assigns POS tags to individual tokens.
+ * - Mode Selection: The tagging mode can be set to probabilistic or rule-based, allowing for different POS tagging
+ *   strategies.
+ * - Handling N-grams: The class handles the creation and processing of N-grams from input text.
+ */
+
 public class ProcessPos {
 
+    private Texture<Script> ST;
     private Script S;
+
+    private Texture<Couple<String,String>> TS;
     private List<Couple<String,String>> LC;
 
     private final boolean prob;
 
-    public ProcessPos(Script S)
+    // Probablistic Based
+    public ProcessPos(Texture<Script> ST, boolean prob)
     {
+        this.ST = ST;
+        this.prob = prob;
+    }
+
+    // RULE BASED
+    public ProcessPos(boolean prob, Texture<Couple<String, String>> TS) {
+        this.TS = TS;
+        this.prob = prob;
+    }
+
+    public ProcessPos(Script S,boolean prob){
         this.S = S;
-        this.prob = true;
+        this.prob = prob;
     }
 
-    public ProcessPos(List<Couple<String,String>> LS)
-    {
-        this.LC = LS;
-        this.prob = false;
+    public Texture<Couple<Script,PosTags>> getSentence(){
+        if(prob){
+            return processProbabilistic().at(0);
+        }
+        else {
+            return processRuleBased(TS).at(0);
+        }
     }
 
-    public Texture<Couple<Script, PosTags>> getCouples()
+
+    public Texture<Texture<Couple<Script, PosTags>>> getCouples()
     {
         if(prob){
             return processProbabilistic();
         }
         else {
-            return processRuleBased();
+            return processRuleBased(TS);
         }
     }
 
-    private  Texture<Couple<Script, PosTags>> processRuleBased()
-    {
-        Texture<Couple<Script, PosTags>> res = new Texture<>();
-        for(Couple<String,String> stringStringCouple : LC)
+
+    private Texture<Texture<Couple<Script, PosTags>>> processRuleBased(Texture<Couple<String,String>> T) {
+        Texture<Texture<Couple<Script, PosTags>>> res = new Texture<>();
+        Texture<Couple<Script, PosTags>> ZE = new Texture<>();
+        for(Couple<String,String> CS :T)
         {
-            res = res.add(new Couple<>(
-                    Script.of(stringStringCouple.getKey())
-                    ,getPosTag(Script.of(stringStringCouple.getValue()))));
+            if(CS.getKey().equals("$"))
+            {
+                res = res.add(ZE);
+                ZE = new Texture<>();
+            }
+            else{
+                ZE = ZE.add(new Couple<>(Script.of(CS.getKey()),getPosTag(Script.of(CS.getValue()))));
+            }
         }
+        res = res.add(ZE);
         return res;
     }
 
-    private Texture<Couple<Script, PosTags>> processProbabilistic() {
-        Texture<Couple<Script, PosTags>> res = new Texture<>();
-        Script D = S.replace("\\[","");
-        D = D.replace("\\]","");
-        List<String> LS = splitByComma(D.toString());
+    private Texture<Texture<Couple<Script, PosTags>>> processProbabilistic() {
+        Texture<Texture<Couple<Script, PosTags>>> res = new Texture<>();
+        Texture<Couple<Script, PosTags>> ZE = new Texture<>();
+        Script S = ST.at(0);
+        List<Script> LS = makeNgrams(String.valueOf(S));
         for(int i = 0; i+1<LS.size();i+=2)
         {
-            String token =",";
-            if(LS.get(i).length()>=3)
-            {
-                token = LS.get(i).replaceAll("'| ","");
-            }
-            res = res.add(new Couple<>(Script.of(token), getPosTag(Script.of(LS.get(i+1)))));
 
+            Script tag = LS.get(i+1).replace("\'", "")
+                    .replace("\\[", "")
+                    .replace(" ","")
+                    .replace("\\]","");
+            Script token = LS.get(i).replace("\'", "")
+                    .replace("\\[", "")
+                    .replace("\\]","")
+                    .replace("\\\\","");
+
+            if(token.equals(Script.of("$"))){
+                res = res.add(ZE);
+                ZE = new Texture<>();
+            }
+            else{
+                if(!token.equals(""))
+                {
+                    ZE = ZE.add(new Couple<>(token,getPosTag(tag)));
+                }
+            }
         }
+        res = res.add(ZE);
         return res;
     }
 
-    private List<String> splitByComma (String  S)
-    {
-        List<String> tokens = new ArrayList<>();
-        int start = 0;
+    private List<Script> makeNgrams(String S) {
+        List<Script> splitByComma = new ArrayList<>();
+        int startIndex = 0;
+
         for (int i = 0; i < S.length(); i++) {
-            if (S.charAt(i) == ',' &&
-                    ( S.charAt(i + 1) != '\''))
-            {
-                tokens.add(S.substring(start, i));
-                start = i + 1;
+            char currentChar = S.charAt(i);
+
+            if (currentChar == ',') {
+                String part = S.substring(startIndex, i);
+                splitByComma.add(Script.of(part));
+                startIndex = i + 1;
             }
         }
-        tokens.add(S.substring(start));
-        return tokens;
 
+        if (startIndex < S.length()) {
+            String part = S.substring(startIndex);
+            splitByComma.add(new Script(part));
+        }
+        List<Script> res = new ArrayList<>();
+        boolean comma = false;
+        for(Script SA : splitByComma)
+        {
+
+            if((SA.equals("")|| SA.equals('\\')) && !comma)
+            {
+                res.add(new Script(","));
+                comma = true;
+            }
+            else {
+                res.add(SA.replace(",",""));
+                comma = false;
+            }
+
+        }
+        return res;
     }
 
     private PosTags getPosTag(Script C) {
         String S = C.toString();
         try{
-            String D = S;
-            if(prob)
-            {
-                D = S.substring(2,S.length()-1);
+            switch (S) {
+                case "NN", "NNP", "NNPS", "NNS" -> { return PosTags.Noun; }
+                case "CC" -> { return PosTags.Conjunction; }
+                case "CD" -> { return PosTags.Numeral; }
+                case "DT", "WDT" -> { return PosTags.Determiner; }
+                case "JJ", "JJR", "JJS" -> { return PosTags.Adjective; }
+                case "MD" -> { return PosTags.Auxilary; }
+                case "PRP", "PRP$", "POS", "PDT", "WP", "WP$" -> { return PosTags.Pronoun; }
+                case "RB", "RBR", "RBS", "RP", "WRB" -> { return PosTags.Adverb; }
+                case "TO" -> { return PosTags.to; }
+                case "UH" -> { return PosTags.Interjection; }
+                case "VB", "VBD", "VBG", "VBN", "VBP", "VBZ" -> { return PosTags.Verb; }
+                case "EX" -> { return PosTags.Existential; }
+                case "IN" -> { return PosTags.Preposition; }
+                case "LS" -> { return PosTags.list; }
+                default -> { return PosTags.Default; }
             }
-            //System.out.println(D);
-            return switch (D) {
-                case "NN", "NNP", "NNPS", "NNS" -> PosTags.Noun;
-                case "CC" -> PosTags.Conjunction;
-                case "CD" -> PosTags.Numeral;
-                case "DT", "WDT" -> PosTags.Determiner;
-                case "JJ", "JJR", "JJS" -> PosTags.Adjective;
-                case "MD" -> PosTags.Auxilary;
-                case "PRP", "PRP$", "POS", "PDT", "WP", "WP$" -> PosTags.Pronoun;
-                case "RB", "RBR", "RBS", "RP", "WRB" -> PosTags.Adverb;
-                case "TO" -> PosTags.to;
-                case "UH" -> PosTags.Interjection;
-                case "VB", "VBD", "VBG", "VBN", "VBP", "VBZ" -> PosTags.Verb;
-                case "EX" -> PosTags.Existential;
-                case "IN" -> PosTags.Preposition;
-                case "LS" -> PosTags.list;
-                default -> PosTags.Default;
-            };
         }
         catch (Exception e)
         {
-            return PosTags.Default; // Wenn wir durch kommas Splitten, wird das Komma entfernt und wir erhalten ein leeren String dieser wird dann als Default returned
+            return PosTags.Default;
         }
     }
 }

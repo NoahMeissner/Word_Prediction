@@ -3,24 +3,33 @@ package Part_Of_Speech_Tagging;
 import lingologs.Script;
 import lingologs.Texture;
 
+/**
+ * Key Functionalities:
+ * - Text Normalization: Normalizes input text by handling punctuation, capitalization, and whitespace.
+ * - Preprocessing Options: Allows for different levels of preprocessing
+ * - Handling Whitespace: Provides methods to split and filter text into meaningful units, such as sentences or paragraphs.
+ */
 public class PreProcessing {
 
-    private Script S;
     private final boolean preprocessing;
     private final boolean POS;
+    private Script S;
     private Texture<Script> LS;
 
-    public PreProcessing(Script S, boolean preprocessing){
-        this.S = S;
-        this.preprocessing = preprocessing;
-        this.POS = false;
-    }
 
-    public PreProcessing(Texture<Script> LS, boolean preprocessing)
+
+    public PreProcessing(Texture<Script> LS, boolean preprocessing, boolean POS)
     {
         this.LS = LS;
         this.preprocessing = preprocessing;
-        this.POS = true;
+        this.POS = POS;
+    }
+
+    public PreProcessing(Script S, boolean preprocessing, boolean POS)
+    {
+        this.S = S;
+        this.preprocessing = preprocessing;
+        this.POS = POS;
     }
 
 
@@ -50,6 +59,10 @@ public class PreProcessing {
         return S;
     }
 
+    public Script getSentence(){
+        return Normalise(S);
+    }
+
     private Texture<Script> deleteWhiteSpace(Script S) {
         Texture<Script> LS = new Texture<>(Normalise(S).split(" "));
         LS.filter(A -> !A.equals(Script.of(" ")) ||!A.equals(Script.of("")) );
@@ -57,7 +70,13 @@ public class PreProcessing {
     }
 
     public Script getText() {
-        return Normalise(S);
+        StringBuilder SB = new StringBuilder();
+        for (Script A : LS)
+        {
+            SB.append(Normalise(A));
+            SB.append("$");
+        }
+        return Script.of(SB.toString());
     }
 
     public Texture<Texture<Script>> getListText()

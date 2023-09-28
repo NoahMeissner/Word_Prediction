@@ -44,11 +44,11 @@ public class TrainListNP {
         public HashMap<Script, HashMap<Script, Integer>> call() {
             if(Bigram){
                 TrainBigramWeights T = new TrainBigramWeights(LS);
-                return T.getWeights();
+                return T.getResults();
             }
             else{
                 TrainUnigramWeights T = new TrainUnigramWeights(LS);
-                return T.getWeights();
+                return T.getResults();
             }
         }
     }
@@ -65,7 +65,7 @@ public class TrainListNP {
                 {
                     Z = Z.add(H.get(Script.of("text_entry")));
                 }
-                PreProcessing P = new PreProcessing(Z,preprocessing);
+                PreProcessing P = new PreProcessing(Z,preprocessing,false);
                 result = result.add(P.getListText());
             }
         }
