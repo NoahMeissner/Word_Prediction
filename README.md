@@ -1,6 +1,6 @@
 # Word_Prediction
-Programming a Word Prediction Tool
-
+Die Generierung von Texten ist eines der faszinierensten und herausfordernsten Forschungsfelder in der Welt der Sprachverarbeitung. 
+In diesem Projekt wurde ein System zur Vorhersage von Wörtern implementiert. Dabei wurden verschiedene Ansätzt verwendet und verglichen. 
 
 #  Installation Guide
 First: Add following Libaries:
