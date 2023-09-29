@@ -1,0 +1,11 @@
+;Preprocessing;Ngrams;Learning;POS Tagging;Duration;positiv;negativ;nicht gefunden;POS positiv/ Nicht gefunden
+Probablistic POS Tagging;true;Unigrams;true;probablistic;53378;;;;
+Rule Based POS Tagging;true;Unigrams;true;rule Based;189989;;;;
+Training no POS;true;Unigrams;true;-;10481;;;;
+Training POS rule based;true;Unigrams;true;rule Based;207657;;;;
+Training POS probablistic;true;Unigrams;true;probablistic;95863;;;;
+Test POS probablistic;true;Unigrams;true;probablistic;5827;6201;28984;1001;13639
+Test POS rule based;true;Unigrams;true;rule Based;8718;2350;24229;897;9411
+Test Npos ;true;Unigrams;true;-;4839;7346;22119;0;0
+Test Combination rule based;true;Unigrams;true;rule Based;11501;50;3094;28214;25070
+Test Combination probablistic;true;Unigrams;true;probablistic;5138;0;7;37096;37096
