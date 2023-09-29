@@ -18,6 +18,7 @@ Lingo Library |
 
 
 ## Data
-
-Für das trainiern wurde eins [Shakespeare](https://old.datahub.io/tr/dataset/william-shakespeare-plays/resource/f357200a-d71c-44f4-8271-b00348a6f9c4?inner_span=True!)
-Datensatz verwendet.
+<a> <img src="https://raw.githubusercontent.com/NoahMeissner/Word_Prediction/main/Quellen/frequency.png"></a>
+<br>
+A [Shakespeare](https://old.datahub.io/tr/dataset/william-shakespeare-plays/resource/f357200a-d71c-44f4-8271-b00348a6f9c4?inner_span=True!)
+Dataset was used for the training.
