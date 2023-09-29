@@ -1,6 +1,6 @@
-# Word_Prediction
-Die Generierung von Texten ist eines der faszinierensten und herausfordernsten Forschungsfelder in der Welt der Sprachverarbeitung. 
-In diesem Projekt wurde ein System zur Vorhersage von Wörtern implementiert. Dabei wurden verschiedene Ansätzt verwendet und verglichen. 
+# Word Prediction based on the Markov Assumption
+assumption
+Text generation is one of the most fascinating and challenging fields of research in the world of language processing. In this project, a system for predicting words was implemented. Different approaches were used and compared. 
 
 #  Installation Guide
 First: Add following Libaries:
