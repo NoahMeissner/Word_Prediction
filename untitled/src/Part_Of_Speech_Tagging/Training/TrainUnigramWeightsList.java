@@ -9,8 +9,6 @@ import java.util.HashMap;
 
 /**
  * The TrainUnigramWeightsList class is responsible for training unigram weights and generating tag relationships
- * for a given list of script and part-of-speech tag pairs. It calculates the frequency of co-occurrences between
- * script, part-of-speech tags, and other scripts, and stores this information in nested hash maps.
  */
 
 public class TrainUnigramWeightsList {

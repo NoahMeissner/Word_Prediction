@@ -12,12 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The 'LoadTrainingData' class is responsible for loading the Data from the .json file.
- * It reads the File and extract the information from the JSON Structure.
- * Methods:
-    * getString() -> Load the .jsonFile as String
-    * prepareData() -> separate each works
-    * prepareValues() -> extract Information of each line
+ * The class is responsible for loading the Data from the .json file.
  */
 
 public class LoadTrainingData {

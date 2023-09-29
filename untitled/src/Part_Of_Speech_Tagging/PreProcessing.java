@@ -41,7 +41,6 @@ public class PreProcessing {
         {
             S = Script.of(" ");
         }
-        //TODO nochmal anschauen
 
         S = S.replace("[\\r\\n]+", " ")
             .replace(","," , ")

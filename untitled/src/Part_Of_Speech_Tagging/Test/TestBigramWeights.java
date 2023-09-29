@@ -39,9 +39,8 @@ public class TestBigramWeights {
         int positive = 0, negative = 0, notFound = 0, posright = 0;
         HashMap<Script, HashMap<PosTags, Integer>> tags = C.getValue();
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> text_weights = C.getKey();
-        Texture<Texture<Couple<Script,PosTags>>> L = LS;
 
-        for(Texture<Couple<Script,PosTags>> POSList: L)
+        for(Texture<Couple<Script,PosTags>> POSList: LS)
         {
             for(int i = 0; i<POSList.toList().size(); i++)
             {
@@ -64,7 +63,7 @@ public class TestBigramWeights {
                                 HashMap<PosTags, HashMap<Script,Integer>> HMT = text_weights.get(textB);
                                 if(HMT.get(keyMaxPos)!= null)
                                 {
-                                    if(keyMaxPos.equals(tagB)){
+                                    if(Script.of(keyMaxPos.name()).equals(tagB)){
                                         posright++;
                                     }
                                     HashMap<Script,Integer> HMS = HMT.get(keyMaxPos);

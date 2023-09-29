@@ -21,11 +21,12 @@ public class TestUnigramWeights {
 
     private final boolean learn;
     private final Texture<Texture<Couple<Script,PosTags>>> LS;
-    private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    private final Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C;
 
 
-    public TestUnigramWeights(Texture<Texture<Couple<Script,PosTags>>> LS, boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    public TestUnigramWeights(Texture<Texture<Couple<Script,PosTags>>> LS,
+                              boolean learn, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C )
     {
         this.learn = learn;
@@ -37,7 +38,7 @@ public class TestUnigramWeights {
         int positive = 0;
         int negative = 0;
         int notFound = 0;
-        int posright = 0;
+        int posPositive = 0;
         HashMap<Script, HashMap<PosTags, Integer>> tags = C.getValue();
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> text_weights = C.getKey();
 
@@ -51,7 +52,7 @@ public class TestUnigramWeights {
                     Script textB = POSList.at(i).getKey();
                     if(text_weights.get(textB)!= null)
                     {
-                        if(tags.get(Script.of(tagB.name()))!= null) // TODO name geändert
+                        if(tags.get(Script.of(tagB.name()))!= null)
                         {
                             HashMap<PosTags, Integer> HMP = tags.get(Script.of(tagB.name()));
                             Optional<Map.Entry<PosTags, Integer>> entryWithMaxPos = HMP.entrySet().stream()
@@ -64,7 +65,7 @@ public class TestUnigramWeights {
                                 if(HMT.get(keyMaxPos)!= null)
                                 {
                                     if(keyMaxPos == POSList.at(i+1).getValue()){
-                                        posright++;
+                                        posPositive++;
                                     }
                                     HashMap<Script,Integer> HMS = HMT.get(keyMaxPos);
                                     Optional<Map.Entry<Script, Integer>> KeyMaxScript = HMS.entrySet().stream()
@@ -124,7 +125,7 @@ public class TestUnigramWeights {
                 }
             }
         }
-        return new Tuple.Quaple<>(positive,negative,notFound,posright);
+        return new Tuple.Quaple<>(positive,negative,notFound,posPositive);
     }
 
     private Script findScriptWithMaxValue(HashMap<PosTags, HashMap<Script, Integer>> dataMap) {

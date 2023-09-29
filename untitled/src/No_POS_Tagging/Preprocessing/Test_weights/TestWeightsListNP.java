@@ -29,7 +29,8 @@ public class TestWeightsListNP {
             HashMap<Script, HashMap<Script, Integer>>> Weights;
     public TestWeightsListNP(HashMap<String, List<HashMap<Script,Script>>> HS,
                              String test,
-                             Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> Weights,
+                             Map.Entry<HashMap<Script, HashMap<Script, Integer>>,
+                                     HashMap<Script, HashMap<Script, Integer>>> Weights,
                              boolean UOB, boolean learn, boolean preprocessing)
     {
         this.HS = reduceMap(HS,test);

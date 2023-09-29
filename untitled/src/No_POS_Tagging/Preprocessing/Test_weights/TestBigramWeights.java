@@ -68,15 +68,13 @@ public class TestBigramWeights {
                     {
                         List<Script> LR = getMaxValues(H, simi);
                         boolean tr = false;
-                        for(int a = 0; a<LR.size();a++)
-                        {
-                            Script res = L.at(i+1).split(" ").get(1);
-                            if (res.equals(LR.get(a))) {
+                        for (Script C : LR) {
+                            Script res = L.at(i + 1).split(" ").get(1);
+                            if (res.equals(C)) {
                                 result.add(1);
-                                if(learn)
-                                {
+                                if (learn) {
                                     int e = H.get(res);
-                                    H.put(res,e+1);
+                                    H.put(res, e + 1);
                                 }
                                 tr = true;
                                 break;
@@ -111,19 +109,15 @@ public class TestBigramWeights {
         }
 
 
-        for (int i = 0; i< result.size();i++)
-        {
+        for (Integer integer : result) {
 
-            if(result.get(i)== 1)
-            {
+            if (integer == 1) {
                 tr++;
             }
-            if(result.get(i)==0)
-            {
+            if (integer == 0) {
                 fa++;
             }
-            if(result.get(i)==2)
-            {
+            if (integer == 2) {
                 no++;
             }
 
@@ -134,7 +128,7 @@ public class TestBigramWeights {
     public List<Script> getMaxValues(HashMap<Script, Integer> hashMap, int n) {
         List<Map.Entry<Script, Integer>> sortedEntries = new ArrayList<>(hashMap.entrySet());
 
-        Collections.sort(sortedEntries, (e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+        sortedEntries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
         List<Script> maxValues = new ArrayList<>();
 

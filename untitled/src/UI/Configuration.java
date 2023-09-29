@@ -22,8 +22,8 @@ public class Configuration {
             Tags.config,"Load Old Config(1) or set up new(2)?",
             Tags.postag, "With POS-TAGGING(1) or not(2)",
             Tags.preprocessing,"With Pre-Processing(1) or not(2)?",
-            Tags.howprocess,"Probablistic POS-Tagging(1) or Rule Based(2)?",
-            Tags.ngrams,"Bigrams(1) or Unigrams(2)",
+            Tags.howprocess,"Probabilistic POS-Tagging(1) or Rule Based(2)?",
+            Tags.ngrams,"Bigrams(1) or Uni grams(2)",
             Tags.learn,"Learning during Processing(1) or not(2)?"
     );
 
@@ -60,7 +60,6 @@ public class Configuration {
     private Map<Tags,String> links(){
         Map<Tags,String> res = new HashMap<>();
         res.put(Tags.text,askLink("If you want to save the text, type in the file link"));
-        res.put(Tags.result,askLink("If you want to save the result, type in the file link"));
         return res;
     }
 
@@ -97,10 +96,7 @@ public class Configuration {
                         res.put(Tags.postag, I);
                         System.out.println("Number " + I + " was set");
                     }
-                    if (T == Tags.howprocess && res.containsKey(Tags.postag) && res.get(Tags.postag) == 2)
-                    {
-                        continue;
-                    } else
+                    if (!(T == Tags.howprocess && res.containsKey(Tags.postag) && res.get(Tags.postag) == 2))
                     {
                         if (!res.containsKey(T))
                         {
@@ -117,7 +113,7 @@ public class Configuration {
                 res = L.getConfig();
                 if(res.size() ==1)
                 {
-                    System.out.println("Daten konnten nicht geladen werden konfiguriere noch einmal");
+                    System.out.println("Data could not be loaded configure again");
                     return setup();
                 }
                 res.put(Tags.config,1);
@@ -128,7 +124,7 @@ public class Configuration {
         }
         catch (Exception E)
         {
-            System.out.println("Daten konnten nicht geladen werden konfiguriere noch einmal");
+            System.out.println("Data could not be loaded configure again");
             return setup();
         }
     }

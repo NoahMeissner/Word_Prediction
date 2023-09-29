@@ -357,9 +357,9 @@ public class Chat {
         }
         String A = new Scanner(System.in).nextLine();
         switch (A) {
-            case "1" -> S += " " + T[0].replace(" ","");
-            case "2" -> S += " " + T[1].replace(" ","");
-            case "3" -> S += " " + T[2].replace(" ","");
+            case "1" -> S += " " + Objects.requireNonNull(T)[0].replace(" ","");
+            case "2" -> S += " " + Objects.requireNonNull(T)[1].replace(" ","");
+            case "3" -> S += " " + Objects.requireNonNull(T)[2].replace(" ","");
             default -> S += " " + A;
         }
         return S;

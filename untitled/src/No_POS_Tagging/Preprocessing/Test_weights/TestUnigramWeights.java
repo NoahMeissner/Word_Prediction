@@ -15,7 +15,7 @@ import java.util.*;
 
 public class TestUnigramWeights {
 
-    private HashMap<Script, HashMap<Script, Integer>> HM;
+    private final HashMap<Script, HashMap<Script, Integer>> HM;
     private final Texture<Texture<Script>> testSet;
 
     private final int simi;
@@ -45,14 +45,12 @@ public class TestUnigramWeights {
                     if(H!=null)
                     {
                         List<Script> LR = getMaxValues(H, simi);
-                        for(int a = 0; a<LR.size();a++)
-                        {
-                            if (L.at(i + 1).equals(LR.get(a))) {
+                        for (Script C : LR) {
+                            if (L.at(i + 1).equals(C)) {
                                 result.add(1);
-                                if(learn)
-                                {
-                                    int e = H.get(L.at(i+1));
-                                    H.put(L.at(i+1),e+1);
+                                if (learn) {
+                                    int e = H.get(L.at(i + 1));
+                                    H.put(L.at(i + 1), e + 1);
                                 }
                                 t = true;
                                 break;
@@ -87,19 +85,15 @@ public class TestUnigramWeights {
         int tr = 0; // 1
         int fa = 0; // 0
         int no = 0; // 2
-        for (int i = 0; i< result.size();i++)
-        {
+        for (Integer integer : result) {
 
-            if(result.get(i)== 1)
-            {
+            if (integer == 1) {
                 tr++;
             }
-            if(result.get(i)==0)
-            {
+            if (integer == 0) {
                 fa++;
             }
-            if(result.get(i)==2)
-            {
+            if (integer == 2) {
                 no++;
             }
 
@@ -110,7 +104,7 @@ public class TestUnigramWeights {
     public List<Script> getMaxValues(HashMap<Script, Integer> hashMap, int n) {
         List<Map.Entry<Script, Integer>> sortedEntries = new ArrayList<>(hashMap.entrySet());
 
-        Collections.sort(sortedEntries, (e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+        sortedEntries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
         List<Script> maxValues = new ArrayList<>();
 

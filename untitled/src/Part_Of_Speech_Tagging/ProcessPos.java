@@ -18,14 +18,12 @@ import java.util.List;
 public class ProcessPos {
 
     private Texture<Script> ST;
-    private Script S;
 
     private Texture<Couple<String,String>> TS;
-    private List<Couple<String,String>> LC;
 
     private final boolean prob;
 
-    // Probablistic Based
+    // Probabilistic Based
     public ProcessPos(Texture<Script> ST, boolean prob)
     {
         this.ST = ST;
@@ -35,11 +33,6 @@ public class ProcessPos {
     // RULE BASED
     public ProcessPos(boolean prob, Texture<Couple<String, String>> TS) {
         this.TS = TS;
-        this.prob = prob;
-    }
-
-    public ProcessPos(Script S,boolean prob){
-        this.S = S;
         this.prob = prob;
     }
 
@@ -90,11 +83,11 @@ public class ProcessPos {
         for(int i = 0; i+1<LS.size();i+=2)
         {
 
-            Script tag = LS.get(i+1).replace("\'", "")
+            Script tag = LS.get(i+1).replace("'", "")
                     .replace("\\[", "")
                     .replace(" ","")
                     .replace("\\]","");
-            Script token = LS.get(i).replace("\'", "")
+            Script token = LS.get(i).replace("'", "")
                     .replace("\\[", "")
                     .replace("\\]","")
                     .replace("\\\\","");
@@ -104,7 +97,7 @@ public class ProcessPos {
                 ZE = new Texture<>();
             }
             else{
-                if(!token.equals(""))
+                if(!token.equals(new Script("")))
                 {
                     ZE = ZE.add(new Couple<>(token,getPosTag(tag)));
                 }
@@ -137,7 +130,7 @@ public class ProcessPos {
         for(Script SA : splitByComma)
         {
 
-            if((SA.equals("")|| SA.equals('\\')) && !comma)
+            if((SA.equals(new Script(""))|| SA.equals(new Script('\\'))) && !comma)
             {
                 res.add(new Script(","));
                 comma = true;

@@ -14,7 +14,7 @@ import java.util.Objects;
 
 /**
  * Key Functionalities:
- * - JSON Serialization: Converts the safe weights to JSON format and stores them in separate files for unigrams (UI)
+ * - JSON Serialization: Converts the safe weights to JSON format and stores them in separate files for Unigrams (UI)
  *   and bigrams (BI).
  * - JSON Deserialization: Retrieves the safe weights from JSON files and loads them into memory.
  * - Deletion: Allows for the deletion of previously stored safe weights.
@@ -26,10 +26,12 @@ public class SafeWeightsNP {
 
     private final Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> M;
 
-    public SafeWeightsNP(Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> M)
+    public SafeWeightsNP(Map.Entry<HashMap<Script, HashMap<Script, Integer>>,
+            HashMap<Script, HashMap<Script, Integer>>> M)
     {
         this.M = M;
-        Map.Entry<HashMap<String, HashMap<String, Integer>>, HashMap<String, HashMap<String, Integer>>> ZS = convertScriptToString(M);
+        Map.Entry<HashMap<String, HashMap<String, Integer>>,
+                HashMap<String, HashMap<String, Integer>>> ZS = convertScriptToString(M);
         SafeInJSON(UI,ZS.getValue());
         SafeInJSON(BI,ZS.getKey());
     }
@@ -71,25 +73,8 @@ public class SafeWeightsNP {
         }
     }
 
-    public void delete()
-    {
-        deleteOldJ(UI);
-        deleteOldJ(BI);
-    }
-
-    private void deleteOldJ(Path P)
-    {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String JS = objectMapper.writeValueAsString(new HashMap<>());
-            Files.write(P, JS.getBytes());
-            System.out.println("Map successful deleted " + P);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Map.Entry<HashMap<String, HashMap<String, Integer>>, HashMap<String, HashMap<String, Integer>>> convertScriptToString(
+    private Map.Entry<HashMap<String, HashMap<String, Integer>>,
+            HashMap<String, HashMap<String, Integer>>> convertScriptToString(
             Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> inputMap) {
         HashMap<String, HashMap<String, Integer>> outerMap = new HashMap<>();
         HashMap<String, HashMap<String, Integer>> innerMap = new HashMap<>();
@@ -123,7 +108,8 @@ public class SafeWeightsNP {
         return Map.entry(outerMap, innerMap);
     }
 
-    private Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> convertStringToScript(
+    private Map.Entry<HashMap<Script, HashMap<Script, Integer>>,
+            HashMap<Script, HashMap<Script, Integer>>> convertStringToScript(
             Map.Entry<HashMap<String, HashMap<String, Integer>>, HashMap<String, HashMap<String, Integer>>> IM)
     {
         HashMap<Script, HashMap<Script, Integer>> outerMap = new HashMap<>();

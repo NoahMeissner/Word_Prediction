@@ -65,7 +65,7 @@ public class TestCombination {
                 {
                     Script token = getToken(SEN,i);
                     Script tag = getTag(SEN,i);
-                    Script tokennext = SEN.at(UOBN).getKey();
+                    Script tokenNext = SEN.at(UOBN).getKey();
                     HashMap<PosTags, Integer> MPOS = tagsPOS.get(tag);
                     if(MPOS != null)
                     {
@@ -105,12 +105,12 @@ public class TestCombination {
                                     }
                                     if((float)maxP/ZR >= accuracy)
                                     {
-                                        if(res.equals(tokennext))
+                                        if(res.equals(tokenNext))
                                         {
                                             positive++;
                                             if(learn)
                                             {
-                                                MPOK.put(tokennext,MPOK.get(tokennext)+1);
+                                                MPOK.put(tokenNext,MPOK.get(tokenNext)+1);
                                                 Mtok.put(PE,MPOK);
                                                 MPOS.put(PE,MPOS.get(PE)+1);
                                                 tagsPOS.put(tag,MPOS);
@@ -158,7 +158,7 @@ public class TestCombination {
                                 }
                             }
                             if((float)maxI/ZR >= accuracy){
-                                if(res.equals(tokennext))
+                                if(res.equals(tokenNext))
                                 {
                                     positive++;
                                     if(learn)
