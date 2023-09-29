@@ -1,3 +1,4 @@
+
 package UI;
 
 import Part_Of_Speech_Tagging.PPos;
@@ -24,18 +25,19 @@ public class Chat {
 
     public Chat(Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C,
+                Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> MNP,
                 boolean UOB, boolean ROP, Map<Tags,String> links, boolean preprocessing)
     {
         this.preprocessing = preprocessing;
         this.UOB = UOB;
         if(UOB)
         {
-            safeText(Script.of(chatPU(C, "",ROP)), links);
+            safeText(Script.of(chatPU(C,MNP.getKey(), "",ROP)), links);
 
         }
         else {
-            chatPB(C, "",ROP);
-            safeText(Script.of(chatPB(C, "",ROP)), links);
+            chatPB(C,MNP.getValue(), "",ROP);
+            safeText(Script.of(chatPB(C,MNP.getValue(), "",ROP)), links);
 
         }
     }
@@ -43,7 +45,7 @@ public class Chat {
 
 
     public Chat(Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> MNP, boolean
-                UOB, Map<Tags,String> links, boolean preprocessing)
+            UOB, Map<Tags,String> links, boolean preprocessing)
     {
         this.UOB = UOB;
         this.preprocessing = preprocessing;
@@ -57,9 +59,11 @@ public class Chat {
         }
     }
 
-    private String chatPB(Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> C, String S,boolean ROP) {
+    private String chatPB(Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
+            HashMap<Script, HashMap<PosTags, Integer>>> C,
+                          HashMap<Script, HashMap<Script, Integer>> MNP, String S,boolean ROP) {
         List<String> LS = List.of(S.split(" "));
-        Script Bigr = Script.of("");
+        Script Bigr;
         if(S.contains(exitName)){
             return S.substring(0, S.length() - exitName.length());
         }
@@ -69,112 +73,18 @@ public class Chat {
             System.out.println(delimiter);
             if(LS.size()>1 && !S.equals(""))
             {
-                Bigr = Script.of(LS.get(LS.size()-2)+" "+LS.get(LS.size()-1));
-                SUG = findMaxPOS(C,Bigr,ROP);
-                System.out.println("(1) "+ SUG[0] + "(2) "+SUG[1] +"(3) "+SUG[2]+"Bigr");
-            }
-            else{
-                System.out.println("Start");
-            }
-            return chatPB(C, write(S,SUG),ROP);
-        }
-    }
-
-    private String chatPU(
-            Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
-                    HashMap<Script, HashMap<PosTags, Integer>>> C, String S, boolean ROP) {
-        if (S.contains(exitName)) {
-            return S.substring(0, S.length() - exitName.length());
-        }
-
-        List<String> LS = List.of(S.split(" "));
-        System.out.println(S);
-        Script[] SUG = new Script[3];
-        System.out.println(delimiter);
-
-        if (LS.size() > 1 && !S.equals("")) {
-            Script UGR = Script.of(LS.get(LS.size()-1));
-            SUG = findMaxPOS(C, UGR, ROP);
-        } else {
-            System.out.println("Start");
-        }
-
-        return chatPU(C, write(S, SUG), ROP);
-    }
-
-    private Script[] findMaxPOS(
-            Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> c,
-            Script S, boolean ROP) {
-        Couple<Script, PosTags> NGram;
-        Texture<Couple<Script, PosTags>> LC;
-        if(ROP)
-        {
-            PPos pPos = new PPos(S,preprocessing);
-            ProcessPos PR = new ProcessPos(pPos.getSentences(),ROP);
-            LC = PR.getSentence();
-            NGram = LC.at(LC.toList().size()-1);
-        }
-        else{
-            RPos R = new RPos(S,preprocessing);
-            ProcessPos PR = new ProcessPos(ROP,R.getPosTags());
-            LC = PR.getSentence();
-            NGram = LC.at(LC.toList().size()-1);
-
-        }
-        if(UOB)
-        {
-            PosTags P = findPos(c.getValue(),Script.of(NGram.getValue().name()));
-            if(c.getKey().get(NGram.getKey()).get(P) != null)
-            {
-                return findMaxSPOS(c.getKey().get(NGram.getKey()).get(P));//TODO error Hashmap get(object ist null
-
-            }
-            else{
-                // TODO was machen wir wenn das ist
-                return null;
-            }
-        }
-        else{
-            String NGRMB = LC.at(LC.toList().size()-1).getValue().name()+ LC.at(LC.toList().size()-1).getValue().name();
-            String textB = LC.at(LC.toList().size()-1).getKey()+ " "+LC.at(LC.toList().size()-1).getKey();
-            Script PTG = Script.of(findPos(c.getValue(),Script.of(NGRMB)).name());
-            return findMaxSPOS(c.getKey().get(textB).get(PTG));
-        }
-    }
-
-    private static Script[] findMaxSPOS(HashMap<Script, Integer> key) {
-        Script[] topThreeScripts = new Script[3];
-        PriorityQueue<Script> priorityQueue = new PriorityQueue<>(3, (s1, s2) -> key.get(s2).compareTo(key.get(s1)));
-
-        if (key != null) {
-            for (Script script : key.keySet()) {
-                priorityQueue.offer(script);
-
-                if (priorityQueue.size() > 3) {
-                    priorityQueue.poll();
+                Bigr = Script.of(" "+LS.get(LS.size()-2)+" "+LS.get(LS.size()-1));
+                SUG = findMaxPOS(C,MNP,Bigr,ROP);
+                if(SUG != null)
+                {
+                    System.out.println("(1) "+ SUG[0] + "(2) "+SUG[1] +"(3) "+SUG[2]+"Bigr");
                 }
             }
-        }
-
-        for (int i = 2; i >= 0; i--) {
-            topThreeScripts[i] = priorityQueue.poll();
-        }
-
-        return topThreeScripts;
-    }
-
-    private PosTags findPos(HashMap<Script, HashMap<PosTags, Integer>> value, Script S) {
-        HashMap<PosTags, Integer> HM = value.get(S);
-        PosTags maxPosTag = null;
-        int maxValue = Integer.MIN_VALUE;
-
-        for (Map.Entry<PosTags, Integer> entry : HM.entrySet()) {
-            if (entry.getValue() > maxValue) {
-                maxValue = entry.getValue();
-                maxPosTag = entry.getKey();
+            else{
+                System.out.println("Start Bigram");
             }
+            return chatPB(C,MNP, write(S,SUG),ROP);
         }
-        return maxPosTag;
     }
 
     private String chatNPB(HashMap<Script, HashMap<Script, Integer>> key, String S) {
@@ -221,6 +131,154 @@ public class Chat {
         }
     }
 
+    private String chatPU(
+            Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
+                    HashMap<Script, HashMap<PosTags, Integer>>> C, HashMap<Script, HashMap<Script, Integer>> MNP,
+            String S, boolean ROP) {
+        if (S.contains(exitName)) {
+            return S.substring(0, S.length() - exitName.length());
+        }
+
+        List<String> LS = List.of(S.split(" "));
+        System.out.println(S);
+        Script[] SUG = new Script[3];
+        System.out.println(delimiter);
+
+        if (LS.size() > 1 && !S.equals("")&& C != null) {
+            Script UGR = Script.of(LS.get(LS.size()-1));
+            SUG = findMaxPOS(C,MNP, UGR, ROP);
+        } else {
+            System.out.println("Start Unigram");
+        }
+
+        return chatPU(C,MNP, write(S, SUG), ROP);
+    }
+
+    private Script[] findMaxPOS(
+            Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>, HashMap<Script, HashMap<PosTags, Integer>>> c,
+            HashMap<Script, HashMap<Script, Integer>> MNP,
+            Script S, boolean ROP) {
+        Couple<Script, PosTags> NGram;
+        Texture<Couple<Script, PosTags>> LC;
+        if(ROP)
+        {
+            PPos pPos = new PPos(S,preprocessing);
+            ProcessPos PR = new ProcessPos(pPos.getSentences(),ROP);
+            LC = PR.getSentence();
+        }
+        else{
+            RPos R = new RPos(S,preprocessing);
+            ProcessPos PR = new ProcessPos(ROP,R.getPosTags());
+            LC = PR.getSentence();
+        }
+        if(UOB)
+        {
+            System.out.println(LC.toList().size());
+            if(LC.toList().size()>0)
+            {
+                NGram = LC.at(LC.toList().size()-1);
+                PosTags P;
+                if(NGram != null) {
+                    P = findPos(c.getValue(), Script.of(NGram.getValue().name()));
+                    if(P != null)
+                    {
+                        HashMap<PosTags,HashMap<Script, Integer>> ZR = c.getKey().get(Script.of(" "+NGram.getKey()));
+                        HashMap<Script,Integer> M = ZR.get(P);
+                        Script[] res = findMaxSPOS(M);
+                        if(res != null)
+                        {
+                            return findMaxSPOS(M);
+                        }
+                        else{
+                            return findMaxNP(NGram.getKey(),MNP,new Script[3]);
+                        }
+                    }
+                    else {
+                        System.out.println("nicht POS");
+                        return findMaxNP(NGram.getKey(),MNP,new Script[3]);
+                    }
+                }
+            }
+            else{
+                System.out.println("no prediction");
+            }
+        }
+        else{
+            try{
+                String BiNgrm = LC.at(0).getValue().name()+" "+ LC.at(1).getValue().name();
+                if(c.getValue()!= null )
+                {
+                    String textB = " "+LC.at(0).getKey()+ " "+LC.at(1).getKey();
+                    PosTags posRes = findPos(c.getValue(), Script.of(BiNgrm));
+                    if(posRes != null)
+                    {
+                        HashMap<PosTags,HashMap<Script, Integer>> ZR = c.getKey().get(Script.of(textB));
+                        HashMap<Script,Integer> M = ZR.get(posRes);
+                        return findMaxSPOS(M);
+                    }
+
+                }
+                else {
+                    System.out.println("C gleich null");
+                    return findMaxNP(new Script(BiNgrm),MNP,new Script[3]);
+                }
+            }catch (Exception e)
+            {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static Script[] findMaxSPOS(HashMap<Script, Integer> key) {
+        Script[] topThreeScripts = new Script[3];
+        PriorityQueue<Script> priorityQueue = new PriorityQueue<>(3, (s1, s2) -> key.get(s2).compareTo(key.get(s1)));
+
+        if (key != null) {
+            for (Script script : key.keySet()) {
+                priorityQueue.offer(script);
+
+                if (priorityQueue.size() > 3) {
+                    priorityQueue.poll();
+                }
+            }
+        }
+
+        for (int i = 2; i >= 0; i--) {
+            topThreeScripts[i] = priorityQueue.poll();
+        }
+        for (int i = 0; i<topThreeScripts.length;i++)
+        {
+            if(topThreeScripts[i] != null)
+            {
+                Script S = topThreeScripts[i].replace(" ","");
+                if(S.equals(new Script("$")))
+                {
+                    topThreeScripts[i] = new Script(" ");
+                }
+            }
+        }
+
+        return topThreeScripts;
+    }
+
+    private PosTags findPos(HashMap<Script, HashMap<PosTags, Integer>> value, Script S) {
+        HashMap<PosTags, Integer> HM = value.get(S);
+        PosTags maxPosTag = null;
+        int maxValue = Integer.MIN_VALUE;
+        if(HM!= null)
+        {
+            for (Map.Entry<PosTags, Integer> entry : HM.entrySet()) {
+                if (entry.getValue() > maxValue) {
+                    maxValue = entry.getValue();
+                    maxPosTag = entry.getKey();
+                }
+            }
+        }
+        return maxPosTag;
+    }
+
+
 
     private Script[] findMaxNP(Script S, HashMap<Script, HashMap<Script, Integer>> key, Script[] LS) {
         S = Script.of(S.toString().toLowerCase());
@@ -255,7 +313,7 @@ public class Chat {
                 } else {
                     return findMaxNP(S, key, LS);
 
-            }
+                }
 
             }
             else {
@@ -263,9 +321,7 @@ public class Chat {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
             return null;
-
         }
     }
 
@@ -301,9 +357,9 @@ public class Chat {
         }
         String A = new Scanner(System.in).nextLine();
         switch (A) {
-            case "1" -> S += " " + T[0];
-            case "2" -> S += " " + T[1];
-            case "3" -> S += " " + T[2];
+            case "1" -> S += " " + T[0].replace(" ","");
+            case "2" -> S += " " + T[1].replace(" ","");
+            case "3" -> S += " " + T[2].replace(" ","");
             default -> S += " " + A;
         }
         return S;

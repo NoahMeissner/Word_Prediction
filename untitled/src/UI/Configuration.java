@@ -52,6 +52,10 @@ public class Configuration {
         return askTest("Would you like to test the system? (true/false)");
     }
 
+    public boolean testAll(){
+        return askTest("Would you like to test all approaches? (true/false)");
+    }
+
 
     private Map<Tags,String> links(){
         Map<Tags,String> res = new HashMap<>();

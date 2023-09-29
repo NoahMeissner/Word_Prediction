@@ -26,37 +26,43 @@ public class TestWeightsListP {
 
     private final boolean learn;
     private final boolean preprocessing;
+
+    private final boolean testAll;
     private final Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> C;
 
     public TestWeightsListP(boolean UOB, Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
-            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean ROP, boolean learn,boolean preprocessing)
+            HashMap<Script, HashMap<PosTags, Integer>>> C, boolean ROP, boolean learn,boolean preprocessing, boolean testAll)
     {
         this.UOB = UOB;
         this.C = C;
         this.ROP = ROP;
         this.learn = learn;
+        this.testAll = testAll;
         this.preprocessing = preprocessing;
     }
 
     public Tuple.Quaple<Integer,Integer,Integer,Integer> testWeights(HashMap<String, List<HashMap<Script,Script>>> HS, String testSetName)
     {
         Texture<Script> testSet = getTestSet(HS,testSetName);
-
-        if(UOB)
+        if(testAll)
         {
             SafeWeightsNP S = new SafeWeightsNP();
-
-            //TestCombination T = new TestCombination(UOB,C,learn,makeNgrams(testSet),S.getM().getKey());
-            //return T.testSystem();
-            TestUnigramWeights T = new TestUnigramWeights(makeNgrams(testSet),learn,C);
-            return T.testWeights();
+            TestCombination T = new TestCombination(UOB,C,learn,makeNgrams(testSet),S.getM().getKey());
+            return T.testSystem();
         }
-        else {
+        else{
+            if(UOB)
+            {
+                TestUnigramWeights T = new TestUnigramWeights(makeNgrams(testSet),learn,C);
+                return T.testWeights();
+            }
+            else {
 
 
-            TestBigramWeights T = new TestBigramWeights(makeNgrams(testSet),learn,C);
-            return T.testWeights();
+                TestBigramWeights T = new TestBigramWeights(makeNgrams(testSet),learn,C);
+                return T.testWeights();
+            }
         }
     }
 

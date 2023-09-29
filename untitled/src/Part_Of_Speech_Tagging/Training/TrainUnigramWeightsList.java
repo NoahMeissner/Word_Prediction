@@ -19,14 +19,12 @@ public class TrainUnigramWeightsList {
 
     public TrainUnigramWeightsList(Texture<Texture<Couple<Script, PosTags>>> LS)
     {
-        System.out.println(LS);
         this.LS = LS;
     }
 
 
     public HashMap<Script, HashMap<PosTags,HashMap<Script,Integer>>> getWeights()
     {
-        System.out.println("Konstruktor get Weights");
         return setWeights(LS);
     }
 
@@ -44,17 +42,17 @@ public class TrainUnigramWeightsList {
             {
                 PosTags currentP = L.at(i).getValue();
 
-                if(res.get(currentP)!= null)
+                if(res.get(Script.of(currentP.name()))!= null)
                 {
                     if(i+1<L.toList().size()){
-                        HashMap<PosTags,Integer> HP = res.get(currentP);
+                        HashMap<PosTags,Integer> HP = res.get(Script.of(currentP.name()));
                         PosTags nextP = L.at(i+1).getValue();
                         int number = 1;
                         if(HP.get(nextP)!=null)
                         {
                             number += HP.get(nextP) ;
                         }
-                        HP.put(PosTags.valueOf(nextP.name()),number);
+                        HP.put(nextP,number);
                         res.put(Script.of(currentP.name()),HP);
                     }
                 }

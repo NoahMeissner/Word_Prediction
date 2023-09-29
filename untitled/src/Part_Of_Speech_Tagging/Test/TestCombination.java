@@ -19,11 +19,11 @@ public class TestCombination {
     private final boolean learn;
 
     private final float accuracy = 0.8F;
-    private HashMap<Script, HashMap<Script, Integer>> HNP;
-    private Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
+    private final HashMap<Script, HashMap<Script, Integer>> HNP;
+    private final Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> CP;
 
-    private Texture<Texture<Tuple.Couple<Script,PosTags>>> LS;
+    private final Texture<Texture<Tuple.Couple<Script,PosTags>>> LS;
 
     public TestCombination(boolean UOB,
                            Tuple.Couple<HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>>,
@@ -44,7 +44,7 @@ public class TestCombination {
         int negative = 0;
         int notFoundPOS = 0;
         int notEnough =0;
-        int UOBN = 0;
+        int UOBN;
         HashMap<Script, HashMap<PosTags, HashMap<Script,Integer>>> tokensPOS = CP.getKey();
         HashMap<Script, HashMap<PosTags, Integer>> tagsPOS = CP.getValue();
         HashMap<Script, HashMap<Script, Integer>> NPOS = HNP;
@@ -107,12 +107,15 @@ public class TestCombination {
                                     {
                                         if(res.equals(tokennext))
                                         {
-                                            positive++;// TODO learn
-                                            MPOK.put(tokennext,MPOK.get(tokennext)+1);
-                                            Mtok.put(PE,MPOK);
-                                            MPOS.put(PE,MPOS.get(PE)+1);
-                                            tagsPOS.put(tag,MPOS);
-                                            tokensPOS.put(token,Mtok);
+                                            positive++;
+                                            if(learn)
+                                            {
+                                                MPOK.put(tokennext,MPOK.get(tokennext)+1);
+                                                Mtok.put(PE,MPOK);
+                                                MPOS.put(PE,MPOS.get(PE)+1);
+                                                tagsPOS.put(tag,MPOS);
+                                                tokensPOS.put(token,Mtok);
+                                            }
                                         }
                                         else{
                                             negative++;
@@ -158,8 +161,11 @@ public class TestCombination {
                                 if(res.equals(tokennext))
                                 {
                                     positive++;
-                                    HS.put(res,HS.get(res)+1);
-                                    NPOS.put(token,HS);
+                                    if(learn)
+                                    {
+                                        HS.put(res,HS.get(res)+1);
+                                        NPOS.put(token,HS);
+                                    }
                                 }
                                 else {
                                     negative++;

@@ -29,8 +29,13 @@ public class Main {
         Map<Tags,String> links = C.getLinks();
         System.out.println("Step 3: Test System");
         boolean T = C.getTest();
+        boolean TA = false;
+        if(T)
+        {
+            TA = C.testAll();
+        }
         System.out.println("All Configured");
-        Processor P = new Processor(config, links, T);
+        Processor P = new Processor(config, links, T,TA);
     }
 
 }

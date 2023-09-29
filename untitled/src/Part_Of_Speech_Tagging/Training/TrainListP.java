@@ -24,10 +24,8 @@ public class TrainListP {
     public TrainListP(HashMap<String, List<HashMap<Script,Script>>> HS,
                       String testWork, boolean ROP, boolean UOB, boolean preprocessing)// testWork Name of work which will be tested set
     {
-        System.out.println("TrainListP");
         this.UOB = UOB;
         this.LS = prepareMap(HS, testWork,ROP);
-        System.out.println(LS);
         this.preprocessing = preprocessing;
     }
 
@@ -91,6 +89,7 @@ public class TrainListP {
     prepareMap(HashMap<String, List<HashMap<Script, Script>>> HS, String testWork,boolean ROP)
     {
         Texture<Texture<Couple<Script, PosTags>>> result = new Texture<>();
+        long startTime = System.currentTimeMillis();
         for(String D : HS.keySet())
         {
             if(!D.equals(testWork))
@@ -117,6 +116,9 @@ public class TrainListP {
                 LZ = new Texture<>();
             }
         }
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Runtime Pos Tagging " + elapsedTime + " Milliseconds");
         return result;
     }
 }

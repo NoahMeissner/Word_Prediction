@@ -35,15 +35,17 @@ public class Processor {
     private boolean howprocess;
     private boolean ngrams;
     private boolean learn;
+    private final boolean testAll;
     private final boolean testConfig;
     private Couple<HashMap<Script, HashMap<PosTags, HashMap<Script, Integer>>>,
             HashMap<Script, HashMap<PosTags, Integer>>> CP;
 
     private Map.Entry<HashMap<Script, HashMap<Script, Integer>>, HashMap<Script, HashMap<Script, Integer>>> MNP;
 
-    public Processor(Map<Tags,Integer> config, Map<Tags,String> links, boolean testConfig){
+    public Processor(Map<Tags,Integer> config, Map<Tags,String> links, boolean testConfig,boolean testAll){
         this.config = config;
         this.links= links;
+        this.testAll = testAll;
         this.testConfig = testConfig;
         setConfig(config);
         TrainWeights();
@@ -55,6 +57,7 @@ public class Processor {
         preprocessing = config.get(Tags.preprocessing) == 1;
         if(postag)
         {
+            System.out.println(config.get(Tags.howprocess));
             howprocess = config.get(Tags.howprocess) == 1;
         }
         ngrams = config.get(Tags.ngrams) == 2;
@@ -63,11 +66,15 @@ public class Processor {
     }
 
     private void TrainWeights(){
+        long startTime = System.currentTimeMillis();
+
         if(postag){
             if(!(config.get(Tags.config)==1)) {
                 LoadTrainingData LT = new LoadTrainingData();
                 TrainListP TP = new TrainListP(LT.getData(), testData, howprocess, ngrams,preprocessing);
+                TrainListNP TNP = new TrainListNP(LT.getData(), testData,preprocessing);
                 Loader L = new Loader(TP.trainWeights());
+                Loader LOP = new Loader(TNP.getWeights());
             }
         }
         else{
@@ -77,15 +84,18 @@ public class Processor {
                 Loader L = new Loader(TNP.getWeights());
             }
         }
-        System.out.println(testConfig);
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Runtime Training " + elapsedTime + " Milliseconds");
+
         if(testConfig)
         {
             TestWeights();
         }
         else{
             setUpChat(postag,
-                    config.get(Tags.ngrams)==1,
-                    (config.get(Tags.howprocess)!= null &&config.get(Tags.howprocess)==1));
+                    config.get(Tags.ngrams)==2,
+                    howprocess);
         }
     }
 
@@ -93,7 +103,8 @@ public class Processor {
         Loader L = new Loader();
         if(postag )
         {
-            Chat C = new Chat(L.getDataP(),UOB,ROP, links,preprocessing);
+
+            Chat C = new Chat(L.getDataP(),L.getDataNP(),UOB,ROP, links,preprocessing);
         }
         else{
             Chat C = new Chat(L.getDataNP(),UOB, links,preprocessing);
@@ -102,18 +113,24 @@ public class Processor {
 
     private void TestWeights()
     {
+        long startTime = System.currentTimeMillis();
         Loader L = new Loader();
         LoadTrainingData LT = new LoadTrainingData();
         if(postag)
         {
             CP = L.getDataP();
-            TestWeightsListP TP = new TestWeightsListP(ngrams,CP,howprocess,learn,preprocessing);
+            TestWeightsListP TP = new TestWeightsListP(ngrams,CP,howprocess,learn,preprocessing,testAll);
             System.out.println(TP.testWeights(LT.getData(),testData));
         }
-        else{
+        else {
             MNP = L.getDataNP();
-            TestWeightsListNP TNP = new TestWeightsListNP(LT.getData(),testData,MNP, ngrams,learn,preprocessing);
+            TestWeightsListNP TNP = new TestWeightsListNP(LT.getData(), testData, MNP, ngrams, learn, preprocessing);
             System.out.println(TNP.testWeights());
+
         }
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Runtime Testing " + elapsedTime + " Milliseconds");
+
     }
 }
