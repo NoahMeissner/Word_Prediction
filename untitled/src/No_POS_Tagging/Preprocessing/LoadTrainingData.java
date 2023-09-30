@@ -61,7 +61,7 @@ public class LoadTrainingData {
             }
         }catch (Exception e)
         {
-            System.out.println(e + "prepareData");
+            System.out.println(e);
         }
         return HM;
     }

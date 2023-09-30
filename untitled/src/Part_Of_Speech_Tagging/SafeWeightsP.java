@@ -57,7 +57,6 @@ public class SafeWeightsP {
             HashMap<String, HashMap<PosTags, Integer>> HM
     )
     {
-        System.out.println(HM.size());
         HashMap<Script, HashMap<PosTags, Integer>> convertedMap = new HashMap<>();
 
         for (String S : HM.keySet()) {
@@ -132,7 +131,6 @@ public class SafeWeightsP {
             HashMap<Script, HashMap<PosTags, Integer>> HM
     )
     {
-        System.out.println(HM.size());
         HashMap<String, HashMap<PosTags, Integer>> convertedMap = new HashMap<>();
 
         for (Script S : HM.keySet()) {

@@ -11,12 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Key Functionalities:
- * - Testing Bigram Weights: Evaluates the performance of a POS tagging system using bigram-based weights on a provided test set.
- * - Learning: Optionally updates the weights during testing if the 'learn' parameter is set to true.
- * - Evaluation Metrics: Computes metrics including true positives, false positives, not found tags, and correctly tagged positions.
- */
+
 public class TestBigramWeights {
 
     private final Texture<Texture<Couple<Script,PosTags>>> LS;
