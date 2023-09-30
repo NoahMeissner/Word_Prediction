@@ -11,7 +11,7 @@ public abstract class Paths_Setup {
 
 
 
-    public static final String PATH_TO_PYTHON_INTERPRETER = "/Users/noahmeissner/Documents/Data/University/Informartionswissenschaften/SS23/Bernd_Ludwig/bin/Python";
+    public static final String PATH_TO_PYTHON_INTERPRETER = "";
 
 
     public static String PATH_TO_PYTHON_INTERPRETER() {
